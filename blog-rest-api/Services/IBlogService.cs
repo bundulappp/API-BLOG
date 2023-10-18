@@ -4,7 +4,10 @@ namespace blog_rest_api.Services
 {
     public interface IBlogService
     {
-        public List<Blog> GetAll();
-        public Blog GetById(Guid id);
+        Task<List<Blog>> GetAllAsync();
+        Task<Blog> GetByIdAsync(Guid id);
+        Task<bool> CreateBlogAsync(Blog blog);
+        Task<bool> UpdateBlogAsync(Blog blog);
+        Task<bool> DeleteBlogAsync(Guid id);
     }
 }
