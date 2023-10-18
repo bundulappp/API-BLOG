@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "IxgQI+NmfquiVSKM/T9jnEWvIEaW1Gjfv7ifCrCeQYwCLZYCjcLLFy9xWyruTyyKCesERY1SGc4u56PFDI1/aA==",
+  "dgSpecHash": "Lnpp/kH4FPN839AQd2KvMCEa7SpecIr+PB9nNWhBOw3hJXiwqXm8+m2yNJTllo0Pp6/9jzHEQqaCO12qGm90kw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Patrik\\source\\repos\\blog-rest-api\\blog-rest-api\\blog-rest-api.csproj",
+  "projectFilePath": "C:\\Users\\Patrik\\source\\repos\\API-BLOG\\blog-rest-api\\blog-rest-api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Patrik\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\Patrik\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\6.0.16\\microsoft.aspnetcore.cryptography.internal.6.0.16.nupkg.sha512",

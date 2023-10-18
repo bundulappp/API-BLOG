@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Patrik\\source\\repos\\blog-rest-api\\blog-rest-api\\blog-rest-api.csproj": {}
+    "C:\\Users\\Patrik\\source\\repos\\API-BLOG\\blog-rest-api\\blog-rest-api.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Patrik\\source\\repos\\blog-rest-api\\blog-rest-api\\blog-rest-api.csproj": {
+    "C:\\Users\\Patrik\\source\\repos\\API-BLOG\\blog-rest-api\\blog-rest-api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Patrik\\source\\repos\\blog-rest-api\\blog-rest-api\\blog-rest-api.csproj",
+        "projectUniqueName": "C:\\Users\\Patrik\\source\\repos\\API-BLOG\\blog-rest-api\\blog-rest-api.csproj",
         "projectName": "blog-rest-api",
-        "projectPath": "C:\\Users\\Patrik\\source\\repos\\blog-rest-api\\blog-rest-api\\blog-rest-api.csproj",
+        "projectPath": "C:\\Users\\Patrik\\source\\repos\\API-BLOG\\blog-rest-api\\blog-rest-api.csproj",
         "packagesPath": "C:\\Users\\Patrik\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Patrik\\source\\repos\\blog-rest-api\\blog-rest-api\\obj\\",
+        "outputPath": "C:\\Users\\Patrik\\source\\repos\\API-BLOG\\blog-rest-api\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Patrik\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -22,7 +22,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\sdk\\7.0.304\\Sdks\\Microsoft.NET.Sdk.Web\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -85,7 +84,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.304\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.103\\RuntimeIdentifierGraph.json"
         }
       }
     }
