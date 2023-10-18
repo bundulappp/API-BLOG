@@ -1,5 +1,4 @@
 # From .NET Core 3.0 you can use the command: `dotnet new gitignore` to generate a customizable .gitignore file
-.vs/blog-rest-api
 *.swp
 *.*~
 project.lock.json
@@ -31,4 +30,4 @@ msbuild.err
 msbuild.wrn
 
 # Visual Studio 2015
-.vs/
+*.vs/
