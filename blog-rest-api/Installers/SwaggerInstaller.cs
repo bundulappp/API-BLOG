@@ -17,6 +17,17 @@ namespace blog_rest_api.Installers
 
             builder.Services.AddScoped<IIdentityService, IdentityService>();
 
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSettings.Secret)),
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                RequireExpirationTime = false,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero
+            };
+            builder.Services.AddSingleton(tokenValidationParameters);
             builder.Services.AddAuthentication(confOptions =>
             {
                 confOptions.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -26,15 +37,7 @@ namespace blog_rest_api.Installers
                 .AddJwtBearer(x =>
                 {
                     x.SaveToken = true;
-                    x.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSettings.Secret)),
-                        ValidateIssuer = false,
-                        ValidateAudience = false,
-                        RequireExpirationTime = false,
-                        ValidateLifetime = true
-                    };
+                    x.TokenValidationParameters = tokenValidationParameters;
                 });
             builder.Services.AddSwaggerGen(x =>
             {

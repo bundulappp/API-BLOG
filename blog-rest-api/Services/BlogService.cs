@@ -46,5 +46,16 @@ namespace blog_rest_api.Services
             return deleted > 0;
         }
 
+        public async Task<bool> UserOwnsPostAsync(Guid postId, string userId)
+        {
+            var blog = await _dbContext.Blogs.AsNoTracking().SingleOrDefaultAsync(x => x.Id == postId);
+            if (blog == null)
+                return false;
+
+            if (blog.UserId != userId)
+                return false;
+
+            return true;
+        }
     }
 }

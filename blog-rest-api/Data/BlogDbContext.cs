@@ -12,5 +12,7 @@ namespace blog_rest_api.Data
         }
 
         public DbSet<Blog> Blogs { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
+
     }
 }

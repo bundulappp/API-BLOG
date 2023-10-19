@@ -2,6 +2,7 @@
 using blog_rest_api.Contracts.V1.Request;
 using blog_rest_api.Contracts.V1.Requests;
 using blog_rest_api.Domain;
+using blog_rest_api.Extensions;
 using blog_rest_api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -39,7 +40,12 @@ namespace blog_rest_api.Controllers.V1
         [HttpPost(ApiRoutes.Blogs.Create)]
         public async Task<IActionResult> Create([FromBody] CreateBlogRequest blogRequest)
         {
-            var blog = new Blog { Name = blogRequest.Name };
+            var blog = new Blog
+            {
+                Name = blogRequest.Name,
+                UserId = HttpContext.GetUserId()
+            };
+
             var response = await _blogService.CreateBlogAsync(blog);
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
             var locationUri = baseUrl + "/" + ApiRoutes.Blogs.Get.Replace("{blogId}", blog.Id.ToString());
@@ -48,13 +54,18 @@ namespace blog_rest_api.Controllers.V1
         }
 
         [HttpPut(ApiRoutes.Blogs.Update)]
-        public async Task<IActionResult> Update([FromRoute] Guid blogId, [FromBody] UpdateBlogRequest blogToUpdate)
+        public async Task<IActionResult> Update([FromRoute] Guid blogId, [FromBody] UpdateBlogRequest request)
         {
-            var blog = new Blog
+            var userOwnPost = await _blogService.UserOwnsPostAsync(blogId, HttpContext.GetUserId());
+
+            if (!userOwnPost)
             {
-                Id = blogId,
-                Name = blogToUpdate.Name,
-            };
+                return BadRequest(new { error = "You do nor own this blog" });
+
+            }
+
+            var blog = await _blogService.GetByIdAsync(blogId);
+            blog.Name = request.Name;
 
             var updated = await _blogService.UpdateBlogAsync(blog);
 
@@ -67,6 +78,14 @@ namespace blog_rest_api.Controllers.V1
         [HttpDelete(ApiRoutes.Blogs.Delete)]
         public async Task<IActionResult> Delete([FromRoute] Guid blogId)
         {
+            var userOwnPost = await _blogService.UserOwnsPostAsync(blogId, HttpContext.GetUserId());
+
+            if (!userOwnPost)
+            {
+                return BadRequest(new { error = "You do nor own this blog" });
+
+            }
+
             var deleted = await _blogService.DeleteBlogAsync(blogId);
 
             if (!deleted)

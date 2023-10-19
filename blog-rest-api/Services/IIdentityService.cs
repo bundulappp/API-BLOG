@@ -7,6 +7,6 @@ namespace blog_rest_api.Services
     {
         Task<AuthenticationResult> RegisterAsnyc(UserRegistrationRequest request);
         Task<AuthenticationResult> LoginAsync(UserLoginRequest request);
-
+        Task<AuthenticationResult> RefreshTokenAsync(string token, string refreshToken);
     }
 }

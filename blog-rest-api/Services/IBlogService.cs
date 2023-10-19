@@ -9,5 +9,6 @@ namespace blog_rest_api.Services
         Task<bool> CreateBlogAsync(Blog blog);
         Task<bool> UpdateBlogAsync(Blog blog);
         Task<bool> DeleteBlogAsync(Guid id);
+        Task<bool> UserOwnsPostAsync(Guid postId, string userId);
     }
 }
