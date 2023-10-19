@@ -7,7 +7,7 @@ using System.Text;
 
 namespace blog_rest_api.Installers
 {
-    public class SwaggerInstaller : IInstaller
+    public class MvcInstaller : IInstaller
     {
         public void InstallServices(WebApplicationBuilder builder)
         {
@@ -39,6 +39,9 @@ namespace blog_rest_api.Installers
                     x.SaveToken = true;
                     x.TokenValidationParameters = tokenValidationParameters;
                 });
+
+            builder.Services.AddAuthorization();
+
             builder.Services.AddSwaggerGen(x =>
             {
                 x.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "Blog-API", Version = "v1" });
