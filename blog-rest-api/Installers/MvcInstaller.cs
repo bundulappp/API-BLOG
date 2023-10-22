@@ -1,4 +1,5 @@
-﻿using blog_rest_api.Options;
+﻿using blog_rest_api.MappingProfiles;
+using blog_rest_api.Options;
 using blog_rest_api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -14,8 +15,9 @@ namespace blog_rest_api.Installers
             var jwtSettings = new JwtSettings();
             builder.Configuration.Bind(nameof(JwtSettings), jwtSettings);
             builder.Services.AddSingleton(jwtSettings);
-
+            builder.Services.AddAutoMapper(typeof(DomainToResponseProfile));
             builder.Services.AddScoped<IIdentityService, IdentityService>();
+            builder.Services.AddScoped<ITagService, TagService>();
 
             var tokenValidationParameters = new TokenValidationParameters
             {
@@ -41,7 +43,6 @@ namespace blog_rest_api.Installers
                 });
 
             builder.Services.AddAuthorization();
-
             builder.Services.AddSwaggerGen(x =>
             {
                 x.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "Blog-API", Version = "v1" });
