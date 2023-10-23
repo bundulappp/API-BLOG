@@ -3,5 +3,6 @@
     public class CreateBlogRequest
     {
         public string Name { get; set; }
+        public List<string> Tags { get; set; }
     }
 }

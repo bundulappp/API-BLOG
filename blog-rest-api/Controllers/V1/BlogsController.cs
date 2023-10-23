@@ -17,13 +17,10 @@ namespace blog_rest_api.Controllers.V1
     {
         private readonly IBlogService _blogService;
         private readonly IMapper _mapper;
-        private readonly ITagService _tagService;
-        public BlogsController(IBlogService blogService, IMapper mapper, ITagService tagService)
+        public BlogsController(IBlogService blogService, IMapper mapper)
         {
             _blogService = blogService;
             _mapper = mapper;
-            _tagService = tagService;
-
         }
         [HttpGet(ApiRoutes.Blogs.GetAll)]
         public async Task<IActionResult> GetAll()
@@ -45,12 +42,15 @@ namespace blog_rest_api.Controllers.V1
         [HttpPost(ApiRoutes.Blogs.Create)]
         public async Task<IActionResult> Create([FromBody] CreateBlogRequest blogRequest)
         {
-            var userId = HttpContext.GetUserId();
-
+            var newBlogId = Guid.NewGuid();
             var blog = new Blog
             {
+                Id = newBlogId,
                 Name = blogRequest.Name,
-                UserId = userId
+                UserId = HttpContext.GetUserId(),
+                Tags = blogRequest.Tags.Select(x => new BlogTag { BlogId = newBlogId, TagId = x.ToLower() }).ToList(),
+                CreatedAt = DateTime.Now.ToLocalTime(),
+                UpdatedAt = DateTime.Now.ToLocalTime()
             };
 
             await _blogService.CreateBlogAsync(blog);

@@ -12,7 +12,9 @@ namespace blog_rest_api.Domain
         public string UserId { get; set; }
         [ForeignKey(nameof(UserId))]
         public IdentityUser User { get; set; }
-        public List<Tag> Tags { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
+        public virtual List<BlogTag> Tags { get; set; }
 
     }
 }

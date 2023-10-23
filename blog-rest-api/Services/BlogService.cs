@@ -21,10 +21,32 @@ namespace blog_rest_api.Services
 
         public async Task<bool> CreateBlogAsync(Blog blog)
         {
+            await AddNewTags(blog);
             await _dbContext.Blogs.AddAsync(blog);
             var created = await _dbContext.SaveChangesAsync();
             return created > 0;
         }
+
+        private async Task AddNewTags(Blog blog)
+        {
+            foreach (var tag in blog.Tags)
+            {
+                var isAlreadyExist = await _dbContext.BlogTags.SingleOrDefaultAsync(x => x.TagId == tag.TagId);
+
+                if (isAlreadyExist != null)
+                    continue;
+
+                var newTag = new Tag
+                {
+                    Name = tag.TagId,
+                    UserId = blog.UserId,
+                    CreatedAt = DateTime.Now.ToLocalTime(),
+                    UpdatedAt = DateTime.Now.ToLocalTime(),
+                };
+                await _dbContext.Tags.AddAsync(newTag);
+            }
+        }
+
         public async Task<bool> UpdateBlogAsync(Blog blogToUpdate)
         {
             _dbContext.Blogs.Update(blogToUpdate);
