@@ -25,7 +25,8 @@ namespace blog_rest_api.Controllers.V1
         [HttpGet(ApiRoutes.Blogs.GetAll)]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _blogService.GetAllAsync());
+            var blogs = await _blogService.GetAllAsync();
+            return Ok(_mapper.Map<List<BlogResponse>>(blogs));
         }
 
         [HttpGet(ApiRoutes.Blogs.Get)]
@@ -36,7 +37,7 @@ namespace blog_rest_api.Controllers.V1
             if (blog == null)
                 return NotFound();
 
-            return Ok(blog);
+            return Ok(_mapper.Map<BlogResponse>(blog));
         }
 
         [HttpPost(ApiRoutes.Blogs.Create)]
@@ -57,9 +58,8 @@ namespace blog_rest_api.Controllers.V1
 
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
             var locationUri = baseUrl + "/" + ApiRoutes.Blogs.Get.Replace("{blogId}", blog.Id.ToString());
-            var response = _mapper.Map<CreateBlogResponse>(blog);
 
-            return Created(locationUri, response);
+            return Created(locationUri, _mapper.Map<BlogResponse>(blog));
         }
 
         [HttpPut(ApiRoutes.Blogs.Update)]

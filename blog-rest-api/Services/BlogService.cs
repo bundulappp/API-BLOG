@@ -14,7 +14,10 @@ namespace blog_rest_api.Services
             _dbContext = dbContext;
         }
 
-        public async Task<List<Blog>> GetAllAsync() => await _dbContext.Blogs.ToListAsync();
+        public async Task<List<Blog>> GetAllAsync()
+        {
+            return await _dbContext.Blogs.Include(b => b.Tags).ToListAsync();
+        }
 
 
         public async Task<Blog> GetByIdAsync(Guid blogId) => await _dbContext.Blogs.SingleOrDefaultAsync(x => x.Id == blogId);
@@ -78,6 +81,16 @@ namespace blog_rest_api.Services
                 return false;
 
             return true;
+        }
+
+        public async Task<List<Tag>> GetAllTagsAsync()
+        {
+            return await _dbContext.Tags.AsNoTracking().ToListAsync();
+        }
+
+        public Task<bool> CreateTagAsync(Tag tag)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -23,5 +23,12 @@
             public const string Refresh = Base + "/identity/refresh";
 
         }
+
+        public static class Tags
+        {
+            public const string GetAll = Base + "/tags";
+            public const string Create = Base + "/tags";
+
+        }
     }
 }

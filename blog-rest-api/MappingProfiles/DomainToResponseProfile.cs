@@ -9,7 +9,9 @@ namespace blog_rest_api.MappingProfiles
     {
         public DomainToResponseProfile()
         {
-            CreateMap<Blog, CreateBlogResponse>();
+            CreateMap<Blog, BlogResponse>()
+                .ForMember(dest => dest.Tags, opt => opt.MapFrom(src => src.Tags.Select(x => new CreateTagResponse { Name = x.TagId })));
+            CreateMap<Tag, CreateTagResponse>();
         }
     }
 
