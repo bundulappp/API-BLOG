@@ -37,12 +37,16 @@ namespace blog_rest_api.Services
                 };
             }
 
+            var newUserId = Guid.NewGuid().ToString();
+
             var newUser = new IdentityUser
             {
+                Id = newUserId,
                 Email = request.Email,
                 UserName = request.Username,
 
             };
+
 
             var createdUser = await _userManager.CreateAsync(newUser, request.Password);
 
@@ -54,6 +58,7 @@ namespace blog_rest_api.Services
 
                 };
             }
+            await _userManager.AddClaimAsync(newUser, new Claim("tags.view", "true"));
 
             return await GenerateAuthenticationResultForUser(newUser);
         }
@@ -62,15 +67,21 @@ namespace blog_rest_api.Services
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[]
+
+            var claims = new List<Claim>
                 {
                     new Claim(JwtRegisteredClaimNames.Sub, newUser.Email),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     new Claim(JwtRegisteredClaimNames.Email, newUser.Email),
                     new Claim("id", newUser.Id),
-                }),
+                };
+
+            var userClaims = await _userManager.GetClaimsAsync(newUser);
+            claims.AddRange(userClaims);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.Add(_jwtSettings.TokenLifeTime),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
 

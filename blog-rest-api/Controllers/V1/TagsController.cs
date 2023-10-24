@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using blog_rest_api.Contracts.V1;
+using blog_rest_api.Contracts.V1.Responses;
 using blog_rest_api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace blog_rest_api.Controllers.V1
@@ -16,9 +18,11 @@ namespace blog_rest_api.Controllers.V1
         }
 
         [HttpGet(ApiRoutes.Tags.GetAll)]
+        [Authorize(Policy = "TagViewer")]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _blogService.GetAllTagsAsync());
+            var tags = await _blogService.GetAllTagsAsync();
+            return Ok(_mapper.Map<List<TagResponse>>(tags));
         }
 
         //[HttpPost(ApiRoutes.Tags.Create)]
