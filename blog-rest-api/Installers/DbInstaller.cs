@@ -1,5 +1,4 @@
 ﻿using blog_rest_api.Data;
-using blog_rest_api.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,10 +15,10 @@ namespace blog_rest_api.Installers
 
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            builder.Services
+                .AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<BlogDbContext>();
-
-            builder.Services.AddScoped<IBlogService, BlogService>();
         }
     }
 }

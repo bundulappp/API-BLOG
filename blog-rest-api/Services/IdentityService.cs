@@ -54,6 +54,8 @@ namespace blog_rest_api.Services
 
                 };
             }
+            await _userManager.AddToRoleAsync(newUser, "blogger");
+
 
             return await GenerateAuthenticationResultForUser(newUser);
         }
@@ -62,15 +64,23 @@ namespace blog_rest_api.Services
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
-            var tokenDescriptor = new SecurityTokenDescriptor
+
+            var roles = await _userManager.GetRolesAsync(newUser);
+            var roleClaims = roles.Select(role => new Claim(ClaimTypes.Role, role));
+            var claims = new List<Claim>
             {
-                Subject = new ClaimsIdentity(new[]
-                {
+
                     new Claim(JwtRegisteredClaimNames.Sub, newUser.Email),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     new Claim(JwtRegisteredClaimNames.Email, newUser.Email),
-                    new Claim("id", newUser.Id),
-                }),
+                    new Claim("id", newUser.Id)
+            };
+
+            claims.AddRange(roleClaims);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.Add(_jwtSettings.TokenLifeTime),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
 

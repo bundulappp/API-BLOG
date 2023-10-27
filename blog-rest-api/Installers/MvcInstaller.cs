@@ -17,6 +17,7 @@ namespace blog_rest_api.Installers
             builder.Services.AddSingleton(jwtSettings);
             builder.Services.AddAutoMapper(typeof(DomainToResponseProfile));
             builder.Services.AddScoped<IIdentityService, IdentityService>();
+            builder.Services.AddScoped<IBlogService, BlogService>();
 
             var tokenValidationParameters = new TokenValidationParameters
             {

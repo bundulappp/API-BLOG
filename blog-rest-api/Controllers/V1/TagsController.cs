@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
 using blog_rest_api.Contracts.V1;
 using blog_rest_api.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace blog_rest_api.Controllers.V1
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "blogger")]
     public class TagsController : Controller
     {
         private readonly IBlogService _blogService;

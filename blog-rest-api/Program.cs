@@ -1,5 +1,7 @@
+using blog_rest_api.Data;
 using blog_rest_api.Installers;
 using blog_rest_api.Options;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,13 @@ var installers = typeof(Program).Assembly.ExportedTypes.Where(x =>
 installers.ForEach(installer => installer.InstallServices(builder));
 
 var app = builder.Build();
+using (var serviceScope = app.Services.CreateScope())
+{
+    var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+
+    await RoleAndUserInitializer.Initialize(roleManager, userManager);
+}
 
 var swaggerOptions = new SwaggerOptions();
 app.Configuration.GetSection(nameof(SwaggerOptions)).Bind(swaggerOptions);
