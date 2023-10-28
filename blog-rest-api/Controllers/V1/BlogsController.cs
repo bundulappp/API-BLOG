@@ -54,7 +54,10 @@ namespace blog_rest_api.Controllers.V1
                 UpdatedAt = DateTime.Now.ToLocalTime()
             };
 
-            await _blogService.CreateBlogAsync(blog);
+            var result = await _blogService.CreateBlogAsync(blog);
+
+            if (!result)
+                return BadRequest();
 
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
             var locationUri = baseUrl + "/" + ApiRoutes.Blogs.Get.Replace("{blogId}", blog.Id.ToString());

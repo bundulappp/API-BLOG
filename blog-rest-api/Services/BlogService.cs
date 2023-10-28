@@ -83,14 +83,31 @@ namespace blog_rest_api.Services
             return true;
         }
 
+        public async Task<Tag> GetTagByIdAsync(string tagId) => await _dbContext.Tags.SingleOrDefaultAsync(x => x.Name == tagId);
         public async Task<List<Tag>> GetAllTagsAsync()
         {
             return await _dbContext.Tags.AsNoTracking().ToListAsync();
         }
 
-        public Task<bool> CreateTagAsync(Tag tag)
+
+
+        public async Task<bool> CreateTagAsync(Tag tag)
         {
-            throw new NotImplementedException();
+            await _dbContext.Tags.AddAsync(tag);
+            var created = await _dbContext.SaveChangesAsync();
+            return created > 0;
+
+        }
+
+        public async Task<bool> DeleteTagAsync(string tagId)
+        {
+            var tag = await GetTagByIdAsync(tagId);
+            if (tag == null) return false;
+
+            _dbContext.Tags.Remove(tag);
+            var deleted = await _dbContext.SaveChangesAsync();
+
+            return deleted > 0;
         }
     }
 }
