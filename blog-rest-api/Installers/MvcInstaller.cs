@@ -1,6 +1,9 @@
-﻿using blog_rest_api.MappingProfiles;
+﻿using blog_rest_api.Filters;
+using blog_rest_api.MappingProfiles;
 using blog_rest_api.Options;
 using blog_rest_api.Services;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -18,6 +21,14 @@ namespace blog_rest_api.Installers
             builder.Services.AddAutoMapper(typeof(DomainToResponseProfile));
             builder.Services.AddScoped<IIdentityService, IdentityService>();
             builder.Services.AddScoped<IBlogService, BlogService>();
+            builder.Services.AddFluentValidationAutoValidation();
+            builder.Services.AddValidatorsFromAssemblyContaining<MvcInstaller>();
+            builder.Services.AddMvc(opt =>
+            {
+                opt.Filters.Add<ValidationFilter>();
+            });
+
+
 
             var tokenValidationParameters = new TokenValidationParameters
             {
