@@ -17,7 +17,7 @@ namespace blog_rest_api.Installers
             var jwtSettings = new JwtSettings();
             builder.Configuration.Bind(nameof(JwtSettings), jwtSettings);
             builder.Services.AddSingleton(jwtSettings);
-            builder.Services.AddAutoMapper(typeof(DomainToResponseProfile));
+            builder.Services.AddAutoMapper(typeof(DomainToResponseProfile), typeof(RequestToDomainProfile));
             builder.Services.AddScoped<IIdentityService, IdentityService>();
             builder.Services.AddScoped<IBlogService, BlogService>();
             builder.Services.AddFluentValidationAutoValidation();

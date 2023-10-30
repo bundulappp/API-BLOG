@@ -11,16 +11,7 @@ namespace blog_rest_api.MappingProfiles
             CreateMap<Blog, BlogResponse>()
                 .ForMember(dest => dest.Tags, opt => opt.MapFrom(src => src.Tags.Select(x => new TagResponse { Name = x.TagId })));
             CreateMap<Tag, TagResponse>();
+
         }
     }
-
-    //public class RequestToDomain : Profile
-    //{
-    //    public RequestToDomain()
-    //    {
-    //        CreateMap<CreateBlogRequest, Blog>();
-
-
-    //    }
-    //}
 }

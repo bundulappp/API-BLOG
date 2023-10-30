@@ -31,13 +31,8 @@ namespace blog_rest_api.Controllers.V1
         [HttpPost(ApiRoutes.Tags.Create)]
         public async Task<IActionResult> Create([FromBody] CreateTagRequest tagRequest)
         {
-            var newTag = new Tag
-            {
-                Name = tagRequest.Name,
-                UserId = HttpContext.GetUserId(),
-                CreatedAt = DateTime.Now.ToLocalTime(),
-                UpdatedAt = DateTime.Now.ToLocalTime()
-            };
+            var newTag = _mapper.Map<Tag>(tagRequest);
+            newTag.UserId = HttpContext.GetUserId();
 
             var result = await _blogService.CreateTagAsync(newTag);
 
@@ -46,7 +41,7 @@ namespace blog_rest_api.Controllers.V1
 
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
             var locationUri = baseUrl + "/" + ApiRoutes.Tags.Create;
-            var response = _mapper.Map<CreateTagResponse>(newTag);
+            var response = _mapper.Map<TagResponse>(newTag);
 
             return Created(locationUri, response);
         }
