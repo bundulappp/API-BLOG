@@ -14,9 +14,14 @@ namespace blog_rest_api.Services
             _dbContext = dbContext;
         }
 
-        public async Task<List<Blog>> GetAllAsync()
+        public async Task<List<Blog>> GetAllAsync(PaginationFilter paginationFilter = null)
         {
-            return await _dbContext.Blogs.Include(b => b.Tags).ToListAsync();
+            if (paginationFilter == null)
+            {
+                return await _dbContext.Blogs.Include(b => b.Tags).ToListAsync();
+            }
+            var skip = (paginationFilter.PageNumber - 1) * paginationFilter.PageSize;
+            return await _dbContext.Blogs.Include(b => b.Tags).Skip(skip).Take(paginationFilter.PageSize).ToListAsync();
         }
 
 

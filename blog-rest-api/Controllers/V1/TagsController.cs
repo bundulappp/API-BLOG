@@ -25,7 +25,8 @@ namespace blog_rest_api.Controllers.V1
         [HttpGet(ApiRoutes.Tags.GetAll)]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _blogService.GetAllTagsAsync());
+            var tags = await _blogService.GetAllTagsAsync();
+            return Ok(new PagedResponse<TagResponse>(_mapper.Map<List<TagResponse>>(tags)));
         }
 
         [HttpPost(ApiRoutes.Tags.Create)]
@@ -41,7 +42,7 @@ namespace blog_rest_api.Controllers.V1
 
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
             var locationUri = baseUrl + "/" + ApiRoutes.Tags.Create;
-            var response = _mapper.Map<TagResponse>(newTag);
+            var response = new Response<TagResponse>(_mapper.Map<TagResponse>(newTag));
 
             return Created(locationUri, response);
         }

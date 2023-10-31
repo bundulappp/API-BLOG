@@ -2,17 +2,16 @@
 using blog_rest_api.Contracts.V1;
 using blog_rest_api.Contracts.V1.Request;
 using blog_rest_api.Contracts.V1.Requests;
+using blog_rest_api.Contracts.V1.Requests.Queries;
 using blog_rest_api.Contracts.V1.Responses;
 using blog_rest_api.Domain;
 using blog_rest_api.Extensions;
 using blog_rest_api.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace blog_rest_api.Controllers.V1
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class BlogsController : Controller
     {
         private readonly IBlogService _blogService;
@@ -22,11 +21,15 @@ namespace blog_rest_api.Controllers.V1
             _blogService = blogService;
             _mapper = mapper;
         }
+
         [HttpGet(ApiRoutes.Blogs.GetAll)]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] PaginationQuery paginationQuery)
         {
-            var blogs = await _blogService.GetAllAsync();
-            return Ok(_mapper.Map<List<BlogResponse>>(blogs));
+            var paginationFilter = _mapper.Map<PaginationFilter>(paginationQuery);
+            var blogs = await _blogService.GetAllAsync(paginationFilter);
+            var blogsResponse = _mapper.Map<List<BlogResponse>>(blogs);
+            var paginationResponse = new PagedResponse<BlogResponse>(blogsResponse);
+            return Ok(paginationResponse);
         }
 
         [HttpGet(ApiRoutes.Blogs.Get)]
@@ -37,7 +40,7 @@ namespace blog_rest_api.Controllers.V1
             if (blog == null)
                 return NotFound();
 
-            return Ok(_mapper.Map<BlogResponse>(blog));
+            return Ok(new Response<BlogResponse>(_mapper.Map<BlogResponse>(blog)));
         }
 
         [HttpPost(ApiRoutes.Blogs.Create)]
@@ -62,7 +65,7 @@ namespace blog_rest_api.Controllers.V1
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
             var locationUri = baseUrl + "/" + ApiRoutes.Blogs.Get.Replace("{blogId}", blog.Id.ToString());
 
-            return Created(locationUri, _mapper.Map<BlogResponse>(blog));
+            return Created(locationUri, new Response<BlogResponse>(_mapper.Map<BlogResponse>(blog)));
         }
 
         [HttpPut(ApiRoutes.Blogs.Update)]
@@ -82,7 +85,7 @@ namespace blog_rest_api.Controllers.V1
             var updated = await _blogService.UpdateBlogAsync(blog);
 
             if (updated)
-                return Ok();
+                return Ok(new Response<BlogResponse>(_mapper.Map<BlogResponse>(blog)));
 
             return NotFound();
         }
