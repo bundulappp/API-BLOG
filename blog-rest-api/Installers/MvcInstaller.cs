@@ -56,6 +56,14 @@ namespace blog_rest_api.Installers
             {
                 options.AddPolicy("TagViewer", builder => builder.RequireClaim("tags.view", "true"));
             });
+
+            builder.Services.AddSingleton<IUriService>(provider =>
+            {
+                var accessor = provider.GetRequiredService<IHttpContextAccessor>();
+                var request = accessor.HttpContext.Request;
+                var absoluteUri = string.Concat(request.Scheme, "://", request.Host.ToUriComponent(), "/");
+                return new UriService(absoluteUri);
+            });
         }
     }
 }

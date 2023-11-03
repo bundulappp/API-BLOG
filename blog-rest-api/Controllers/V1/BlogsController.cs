@@ -6,6 +6,7 @@ using blog_rest_api.Contracts.V1.Requests.Queries;
 using blog_rest_api.Contracts.V1.Responses;
 using blog_rest_api.Domain;
 using blog_rest_api.Extensions;
+using blog_rest_api.Helpers;
 using blog_rest_api.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,10 +17,12 @@ namespace blog_rest_api.Controllers.V1
     {
         private readonly IBlogService _blogService;
         private readonly IMapper _mapper;
-        public BlogsController(IBlogService blogService, IMapper mapper)
+        private readonly IUriService _uriService;
+        public BlogsController(IBlogService blogService, IMapper mapper, IUriService uriService)
         {
             _blogService = blogService;
             _mapper = mapper;
+            _uriService = uriService;
         }
 
         [HttpGet(ApiRoutes.Blogs.GetAll)]
@@ -28,7 +31,13 @@ namespace blog_rest_api.Controllers.V1
             var paginationFilter = _mapper.Map<PaginationFilter>(paginationQuery);
             var blogs = await _blogService.GetAllAsync(paginationFilter);
             var blogsResponse = _mapper.Map<List<BlogResponse>>(blogs);
-            var paginationResponse = new PagedResponse<BlogResponse>(blogsResponse);
+
+            if (paginationFilter == null || paginationFilter.PageNumber < 1 || paginationFilter.PageSize < 1)
+            {
+                return Ok(new PagedResponse<BlogResponse>(blogsResponse));
+            }
+
+            var paginationResponse = PaginationHelpers.CreatePaginatedResponse(_uriService, paginationFilter, blogsResponse);
             return Ok(paginationResponse);
         }
 
@@ -62,10 +71,9 @@ namespace blog_rest_api.Controllers.V1
             if (!result)
                 return BadRequest();
 
-            var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
-            var locationUri = baseUrl + "/" + ApiRoutes.Blogs.Get.Replace("{blogId}", blog.Id.ToString());
+            var location = _uriService.GetBlogUri(blog.Id.ToString());
 
-            return Created(locationUri, new Response<BlogResponse>(_mapper.Map<BlogResponse>(blog)));
+            return Created(location, new Response<BlogResponse>(_mapper.Map<BlogResponse>(blog)));
         }
 
         [HttpPut(ApiRoutes.Blogs.Update)]
