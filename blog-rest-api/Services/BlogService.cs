@@ -18,10 +18,10 @@ namespace blog_rest_api.Services
         {
             if (paginationFilter == null)
             {
-                return await _dbContext.Blogs.Include(b => b.Tags).ToListAsync();
+                return await _dbContext.Blogs.Include(blog => blog.Tags).ThenInclude(blogTag => blogTag.Tag).ToListAsync();
             }
             var skip = (paginationFilter.PageNumber - 1) * paginationFilter.PageSize;
-            return await _dbContext.Blogs.Include(b => b.Tags).Skip(skip).Take(paginationFilter.PageSize).ToListAsync();
+            return await _dbContext.Blogs.Include(b => b.Tags).ThenInclude(blogTag => blogTag.Tag).Skip(skip).Take(paginationFilter.PageSize).ToListAsync();
         }
 
 
@@ -39,7 +39,7 @@ namespace blog_rest_api.Services
         {
             foreach (var tag in blog.Tags)
             {
-                var isAlreadyExist = await _dbContext.BlogTags.SingleOrDefaultAsync(x => x.TagId == tag.TagId);
+                var isAlreadyExist = await _dbContext.Tags.SingleOrDefaultAsync(x => x.Name == tag.TagId);
 
                 if (isAlreadyExist != null)
                     continue;
@@ -96,8 +96,13 @@ namespace blog_rest_api.Services
 
 
 
-        public async Task<bool> CreateTagAsync(Tag tag)
+        public async Task<bool> CreateSingleTagAsync(Tag tag)
         {
+            var isAlreadyExist = await _dbContext.BlogTags.SingleOrDefaultAsync(x => x.TagId == tag.Name);
+
+            if (isAlreadyExist != null)
+                return false;
+
             await _dbContext.Tags.AddAsync(tag);
             var created = await _dbContext.SaveChangesAsync();
             return created > 0;

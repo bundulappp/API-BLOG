@@ -8,11 +8,13 @@ using blog_rest_api.Domain;
 using blog_rest_api.Extensions;
 using blog_rest_api.Helpers;
 using blog_rest_api.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace blog_rest_api.Controllers.V1
 {
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class BlogsController : Controller
     {
         private readonly IBlogService _blogService;

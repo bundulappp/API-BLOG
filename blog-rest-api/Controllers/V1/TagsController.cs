@@ -35,7 +35,7 @@ namespace blog_rest_api.Controllers.V1
             var newTag = _mapper.Map<Tag>(tagRequest);
             newTag.UserId = HttpContext.GetUserId();
 
-            var result = await _blogService.CreateTagAsync(newTag);
+            var result = await _blogService.CreateSingleTagAsync(newTag);
 
             if (!result)
                 return BadRequest();
