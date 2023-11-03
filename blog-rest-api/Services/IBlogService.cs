@@ -4,7 +4,7 @@ namespace blog_rest_api.Services
 {
     public interface IBlogService
     {
-        Task<List<Blog>> GetAllAsync(PaginationFilter paginationFilter = null);
+        Task<List<Blog>> GetAllAsync(string? userId = null, PaginationFilter? paginationFilter = null);
         Task<Blog> GetByIdAsync(Guid id);
         Task<bool> CreateBlogAsync(Blog blog);
         Task<bool> UpdateBlogAsync(Blog blog);

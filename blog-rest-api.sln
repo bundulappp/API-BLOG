@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33801.468
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blog-rest-api", "blog-rest-api\blog-rest-api.csproj", "{1807441C-6104-438F-AA5A-370BDE433560}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blog-Rest-Api", "blog-rest-api\Blog-Rest-Api.csproj", "{1807441C-6104-438F-AA5A-370BDE433560}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blog-Rest-Api.UnitTests", "Blog-Rest-Api.UnitTests\Blog-Rest-Api.UnitTests.csproj", "{E637E64B-E91B-40FC-B730-FD35D67BB748}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{1807441C-6104-438F-AA5A-370BDE433560}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1807441C-6104-438F-AA5A-370BDE433560}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1807441C-6104-438F-AA5A-370BDE433560}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E637E64B-E91B-40FC-B730-FD35D67BB748}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E637E64B-E91B-40FC-B730-FD35D67BB748}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E637E64B-E91B-40FC-B730-FD35D67BB748}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E637E64B-E91B-40FC-B730-FD35D67BB748}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

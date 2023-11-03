@@ -14,14 +14,21 @@ namespace blog_rest_api.Services
             _dbContext = dbContext;
         }
 
-        public async Task<List<Blog>> GetAllAsync(PaginationFilter paginationFilter = null)
+        public async Task<List<Blog>> GetAllAsync(string? userId = null, PaginationFilter paginationFilter = null)
         {
+            var queryable = _dbContext.Blogs.AsQueryable();
+
             if (paginationFilter == null)
             {
-                return await _dbContext.Blogs.Include(blog => blog.Tags).ThenInclude(blogTag => blogTag.Tag).ToListAsync();
+                return await queryable.ToListAsync();
+            }
+
+            if (!string.IsNullOrEmpty(userId))
+            {
+                queryable = queryable.Where(blog => blog.UserId == userId);
             }
             var skip = (paginationFilter.PageNumber - 1) * paginationFilter.PageSize;
-            return await _dbContext.Blogs.Include(b => b.Tags).ThenInclude(blogTag => blogTag.Tag).Skip(skip).Take(paginationFilter.PageSize).ToListAsync();
+            return await queryable.Include(blog => blog.Tags).ThenInclude(blogTag => blogTag.Tag).Skip(skip).Take(paginationFilter.PageSize).ToListAsync();
         }
 
 

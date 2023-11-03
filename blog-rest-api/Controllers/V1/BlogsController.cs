@@ -28,10 +28,10 @@ namespace blog_rest_api.Controllers.V1
         }
 
         [HttpGet(ApiRoutes.Blogs.GetAll)]
-        public async Task<IActionResult> GetAll([FromQuery] PaginationQuery paginationQuery)
+        public async Task<IActionResult> GetAll([FromQuery] string? userId = null, [FromQuery] PaginationQuery? paginationQuery = null)
         {
             var paginationFilter = _mapper.Map<PaginationFilter>(paginationQuery);
-            var blogs = await _blogService.GetAllAsync(paginationFilter);
+            var blogs = await _blogService.GetAllAsync(userId, paginationFilter);
             var blogsResponse = _mapper.Map<List<BlogResponse>>(blogs);
 
             if (paginationFilter == null || paginationFilter.PageNumber < 1 || paginationFilter.PageSize < 1)
