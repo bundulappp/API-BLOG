@@ -1,11 +1,12 @@
 ﻿using blog_rest_api.Filters;
 using blog_rest_api.MappingProfiles;
-using blog_rest_api.Options;
-using blog_rest_api.Services;
+using Data.Data.Options;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Logic.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Models.Interfaces;
 using System.Text;
 
 namespace blog_rest_api.Installers

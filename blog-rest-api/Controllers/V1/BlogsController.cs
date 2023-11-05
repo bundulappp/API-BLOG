@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
-using blog_rest_api.Data.Domain;
 using blog_rest_api.Extensions;
 using blog_rest_api.Helpers;
-using blog_rest_api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +8,8 @@ using Models.Contracts.V1;
 using Models.Contracts.V1.Requests;
 using Models.Contracts.V1.Requests.Queries;
 using Models.Contracts.V1.Responses;
+using Models.Domain;
+using Models.Interfaces;
 
 namespace blog_rest_api.Controllers.V1
 {

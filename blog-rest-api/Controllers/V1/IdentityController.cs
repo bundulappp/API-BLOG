@@ -1,9 +1,9 @@
 ﻿using blog_rest_api.Data;
-using blog_rest_api.Services;
 using Microsoft.AspNetCore.Mvc;
 using Models.Contracts.V1;
 using Models.Contracts.V1.Requests;
 using Models.Contracts.V1.Responses;
+using Models.Interfaces;
 
 namespace blog_rest_api.Controllers.V1
 {

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using blog_rest_api.Data.Domain;
 using Models.Contracts.V1.Responses;
+using Models.Domain;
 
 namespace blog_rest_api.MappingProfiles
 {

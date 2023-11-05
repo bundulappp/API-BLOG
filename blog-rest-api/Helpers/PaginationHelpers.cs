@@ -1,7 +1,7 @@
-﻿using blog_rest_api.Data.Domain;
-using blog_rest_api.Services;
-using Models.Contracts.V1.Requests.Queries;
+﻿using Models.Contracts.V1.Requests.Queries;
 using Models.Contracts.V1.Responses;
+using Models.Domain;
+using Models.Interfaces;
 
 namespace blog_rest_api.Helpers
 {

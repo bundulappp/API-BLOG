@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using blog_rest_api.Data.Domain;
 using Models.Contracts.V1.Requests;
 using Models.Contracts.V1.Requests.Queries;
+using Models.Domain;
 
 namespace blog_rest_api.MappingProfiles
 {
