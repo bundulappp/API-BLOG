@@ -1,4 +1,4 @@
-﻿namespace blog_rest_api.Domain
+﻿namespace blog_rest_api.Data.Domain
 {
     public class AuthenticationResult
     {

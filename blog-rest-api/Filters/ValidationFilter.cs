@@ -1,6 +1,6 @@
-﻿using blog_rest_api.Contracts.V1.Responses;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Models.Contracts.V1.Responses;
 
 namespace blog_rest_api.Filters
 {

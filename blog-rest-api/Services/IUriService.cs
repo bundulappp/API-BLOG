@@ -1,4 +1,4 @@
-﻿using blog_rest_api.Contracts.V1.Requests.Queries;
+﻿using Models.Contracts.V1.Requests.Queries;
 
 namespace blog_rest_api.Services
 {

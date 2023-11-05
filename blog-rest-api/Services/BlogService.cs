@@ -1,5 +1,5 @@
 ﻿using blog_rest_api.Data;
-using blog_rest_api.Domain;
+using blog_rest_api.Data.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace blog_rest_api.Services

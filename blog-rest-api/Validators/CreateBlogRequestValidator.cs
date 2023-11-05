@@ -1,5 +1,5 @@
-﻿using blog_rest_api.Contracts.V1.Request;
-using FluentValidation;
+﻿using FluentValidation;
+using Models.Contracts.V1.Requests;
 
 namespace blog_rest_api.Validators
 {

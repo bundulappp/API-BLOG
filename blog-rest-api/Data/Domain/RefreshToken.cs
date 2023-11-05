@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace blog_rest_api.Domain
+namespace blog_rest_api.Data.Domain
 {
     public class RefreshToken
     {

@@ -1,5 +1,5 @@
-﻿using blog_rest_api.Contracts.V1.Requests;
-using blog_rest_api.Domain;
+﻿using blog_rest_api.Data.Domain;
+using Models.Contracts.V1.Requests;
 
 namespace blog_rest_api.Services
 {

@@ -1,4 +1,4 @@
-﻿namespace blog_rest_api.Contracts.V1.Requests
+﻿namespace Models.Contracts.V1.Requests
 {
     public class CreateTagRequest
     {

@@ -1,10 +1,10 @@
-﻿using blog_rest_api.Contracts.V1.Requests;
-using blog_rest_api.Data;
-using blog_rest_api.Domain;
+﻿using blog_rest_api.Data;
+using blog_rest_api.Data.Domain;
 using blog_rest_api.Options;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Models.Contracts.V1.Requests;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;

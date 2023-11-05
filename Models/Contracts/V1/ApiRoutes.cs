@@ -1,4 +1,4 @@
-﻿namespace blog_rest_api.Contracts.V1
+﻿namespace Models.Contracts.V1
 {
     public static class ApiRoutes
     {

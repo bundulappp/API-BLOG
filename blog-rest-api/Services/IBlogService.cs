@@ -1,4 +1,4 @@
-﻿using blog_rest_api.Domain;
+﻿using blog_rest_api.Data.Domain;
 
 namespace blog_rest_api.Services
 {

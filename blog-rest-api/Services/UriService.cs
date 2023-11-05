@@ -1,6 +1,6 @@
-﻿using blog_rest_api.Contracts.V1;
-using blog_rest_api.Contracts.V1.Requests.Queries;
-using Microsoft.AspNetCore.WebUtilities;
+﻿using Microsoft.AspNetCore.WebUtilities;
+using Models.Contracts.V1;
+using Models.Contracts.V1.Requests.Queries;
 
 namespace blog_rest_api.Services
 {
