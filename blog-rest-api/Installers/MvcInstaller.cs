@@ -1,6 +1,6 @@
 ﻿using blog_rest_api.Filters;
 using blog_rest_api.MappingProfiles;
-using Data.Data.Options;
+using Data.Options;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Logic.Services;

@@ -1,5 +1,5 @@
-﻿using blog_rest_api.Data;
-using Data.Data.Options;
+﻿using Data.Data;
+using Data.Options;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;

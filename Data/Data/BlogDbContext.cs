@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Models.Domain;
 
-namespace blog_rest_api.Data
+namespace Data.Data
 {
     public class BlogDbContext : IdentityDbContext
     {

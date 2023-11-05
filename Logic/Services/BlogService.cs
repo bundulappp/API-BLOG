@@ -1,4 +1,4 @@
-﻿using blog_rest_api.Data;
+﻿using Data.Data;
 using Microsoft.EntityFrameworkCore;
 using Models.Domain;
 using Models.Interfaces;

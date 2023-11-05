@@ -1,4 +1,4 @@
-﻿using blog_rest_api.Data;
+﻿using Data.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 

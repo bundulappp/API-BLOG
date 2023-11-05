@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace blog_rest_api.Data
+namespace Data.Data
 {
     public static class RoleAndUserInitializer
     {

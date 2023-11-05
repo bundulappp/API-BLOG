@@ -1,4 +1,4 @@
-﻿using blog_rest_api.Data;
+﻿using Data.Data;
 using Microsoft.AspNetCore.Mvc;
 using Models.Contracts.V1;
 using Models.Contracts.V1.Requests;

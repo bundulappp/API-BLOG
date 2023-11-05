@@ -1,6 +1,6 @@
-using blog_rest_api.Data;
 using blog_rest_api.Installers;
-using Data.Data.Options;
+using Data.Data;
+using Data.Options;
 using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);

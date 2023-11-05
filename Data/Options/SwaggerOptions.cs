@@ -1,4 +1,4 @@
-﻿namespace Data.Data.Options
+﻿namespace Data.Options
 {
     public class SwaggerOptions
     {
