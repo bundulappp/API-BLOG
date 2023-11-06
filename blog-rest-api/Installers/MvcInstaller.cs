@@ -3,6 +3,7 @@ using blog_rest_api.MappingProfiles;
 using Data.Options;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Logic;
 using Logic.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -20,7 +21,11 @@ namespace blog_rest_api.Installers
             builder.Services.AddSingleton(jwtSettings);
             builder.Services.AddAutoMapper(typeof(DomainToResponseProfile), typeof(RequestToDomainProfile));
             builder.Services.AddScoped<IIdentityService, IdentityService>();
+            builder.Services.AddScoped<IBlogRepository, BlogRepository>();
             builder.Services.AddScoped<IBlogService, BlogService>();
+
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
             builder.Services.AddFluentValidationAutoValidation();
             builder.Services.AddValidatorsFromAssemblyContaining<MvcInstaller>();
             builder.Services.AddMvc(opt =>

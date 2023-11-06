@@ -9,27 +9,22 @@ namespace Logic.Services
     {
 
         private readonly BlogDbContext _dbContext;
+        private readonly IBlogRepository _blogRepository;
 
-        public BlogService(BlogDbContext dbContext)
+
+
+
+        public BlogService(BlogDbContext dbContext, IBlogRepository blogRepository)
         {
             _dbContext = dbContext;
+            _blogRepository = blogRepository;
+
         }
 
         public async Task<List<Blog>> GetAllAsync(string? userId = null, PaginationFilter paginationFilter = null)
         {
-            var queryable = _dbContext.Blogs.AsQueryable();
-
-            if (paginationFilter == null)
-            {
-                return await queryable.ToListAsync();
-            }
-
-            if (!string.IsNullOrEmpty(userId))
-            {
-                queryable = queryable.Where(blog => blog.UserId == userId);
-            }
-            var skip = (paginationFilter.PageNumber - 1) * paginationFilter.PageSize;
-            return await queryable.Include(blog => blog.Tags).ThenInclude(blogTag => blogTag.Tag).Skip(skip).Take(paginationFilter.PageSize).ToListAsync();
+            var blogs = _blogRepository.GetAll(userId, paginationFilter);
+            return await Task.FromResult(blogs.ToList());
         }
 
 
@@ -84,9 +79,9 @@ namespace Logic.Services
             return deleted > 0;
         }
 
-        public async Task<bool> UserOwnsPostAsync(Guid postId, string userId)
+        public async Task<bool> UserOwnsPostAsync(Guid blogId, string userId)
         {
-            var blog = await _dbContext.Blogs.AsNoTracking().SingleOrDefaultAsync(x => x.Id == postId);
+            var blog = _blogRepository.GetById(blogId.ToString());
             if (blog == null)
                 return false;
 
@@ -106,7 +101,7 @@ namespace Logic.Services
 
         public async Task<bool> CreateSingleTagAsync(Tag tag)
         {
-            var isAlreadyExist = await _dbContext.BlogTags.SingleOrDefaultAsync(x => x.TagId == tag.Name);
+            var isAlreadyExist = await _dbContext.Tags.FirstOrDefaultAsync(x => x.Name == tag.Name);
 
             if (isAlreadyExist != null)
                 return false;
