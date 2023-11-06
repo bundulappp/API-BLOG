@@ -9,9 +9,19 @@ using System;
 
 namespace Logic.Unit_Tests
 {
+
     [TestFixture]
     public class BlogServiceUnitTests
     {
+        private Mock<IBlogRepository> _blogRepositoryMock;
+        private Mock<BlogDbContext> _blogDbContextMock;
+        [SetUp]
+        public void Setup()
+        {
+            _blogDbContextMock = new Mock<BlogDbContext>();
+            _blogRepositoryMock = new Mock<IBlogRepository>();
+        }
+
         [Test]
         public async Task UserOwnsPostAsync_WhenUserOwnsIt_ShouldReturnTrue()
         {
@@ -19,19 +29,10 @@ namespace Logic.Unit_Tests
             var blogId = Guid.NewGuid();
             var userId = Guid.NewGuid().ToString();
 
-            // Create a mock of IBlogRepository
-            var blogRepositoryMock = new Mock<IBlogRepository>();
-
-            // Configure the mock to return a blog with the specified user ID when GetById is called
-            blogRepositoryMock.Setup(repo => repo.GetById(blogId.ToString()))
+            _blogRepositoryMock.Setup(repo => repo.GetById(blogId.ToString()))
                    .Returns(new Blog { UserId = userId });
 
-
-            // Create a mock of BlogDbContext (use DbContextOptions if needed)
-            var dbContextMock = new Mock<BlogDbContext>();
-
-            // Create the BlogService instance with both dependencies
-            var blogService = new BlogService(dbContextMock.Object, blogRepositoryMock.Object);
+            var blogService = new BlogService(_blogDbContextMock.Object, _blogRepositoryMock.Object);
 
             // Act
             var result = await blogService.UserOwnsPostAsync(blogId, userId);
