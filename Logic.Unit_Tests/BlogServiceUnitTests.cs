@@ -1,11 +1,8 @@
 using Data.Data;
 using Logic.Services;
-using Microsoft.EntityFrameworkCore;
 using Models.Domain;
 using Models.Interfaces;
 using Moq;
-using NUnit.Framework;
-using System;
 
 namespace Logic.Unit_Tests
 {
@@ -23,10 +20,10 @@ namespace Logic.Unit_Tests
         }
 
         [Test]
-        public async Task UserOwnsPostAsync_WhenUserOwnsIt_ShouldReturnTrue()
+        public async Task UserOwnsBlogAsync_WhenUserOwnsIt_ShouldReturnTrue()
         {
             // Arrange
-            var blogId = Guid.NewGuid();
+            var blogId = Guid.NewGuid().ToString();
             var userId = Guid.NewGuid().ToString();
 
             _blogRepositoryMock.Setup(repo => repo.GetById(blogId.ToString()))
@@ -35,12 +32,51 @@ namespace Logic.Unit_Tests
             var blogService = new BlogService(_blogDbContextMock.Object, _blogRepositoryMock.Object);
 
             // Act
-            var result = await blogService.UserOwnsPostAsync(blogId, userId);
+            var result = await blogService.UserOwnsBlogAsync(blogId, userId);
 
             // Assert
             Assert.IsTrue(result);
         }
+        [Test]
+        public async Task UserOwnsBlogAsync_WhenUserDoesNotOwnIt_ShouldReturnFalse()
+        {
+            // Arrange
+            var blogId = Guid.NewGuid().ToString();
+            var userId = Guid.NewGuid().ToString();
 
+            _blogRepositoryMock.Setup(repo => repo.GetById(blogId.ToString()))
+                   .Returns(new Blog());
+
+            var blogService = new BlogService(_blogDbContextMock.Object, _blogRepositoryMock.Object);
+
+            // Act
+            var result = await blogService.UserOwnsBlogAsync(blogId, userId);
+
+            // Assert
+            Assert.IsFalse(result);
+        }
+
+        [Test]
+        public async Task UserOwnsBlogAsync_WhenBlogIsNotFound_ShouldReturnFalse()
+        {
+            // Arrange
+            var blogId = Guid.NewGuid().ToString();
+            var userId = Guid.NewGuid().ToString();
+
+            _blogRepositoryMock.Setup(repo => repo.GetById(blogId.ToString()))
+                   .Returns((Blog)null);
+
+            var blogService = new BlogService(_blogDbContextMock.Object, _blogRepositoryMock.Object);
+
+            // Act
+            var result = await blogService.UserOwnsBlogAsync(blogId, userId);
+
+            // Assert
+            Assert.IsFalse(result);
+        }
+
+        [Test]
+        public async Task GetAllAsync_When
 
     }
 }

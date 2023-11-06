@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
 using blog_rest_api.Extensions;
 using blog_rest_api.Helpers;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.Contracts.V1;
 using Models.Contracts.V1.Requests;
@@ -13,7 +11,7 @@ using Models.Interfaces;
 
 namespace blog_rest_api.Controllers.V1
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class BlogsController : Controller
     {
         private readonly IBlogService _blogService;
@@ -43,9 +41,9 @@ namespace blog_rest_api.Controllers.V1
         }
 
         [HttpGet(ApiRoutes.Blogs.Get)]
-        public async Task<IActionResult> Get([FromRoute] Guid Id)
+        public async Task<IActionResult> Get([FromRoute] string blogId)
         {
-            var blog = _blogService.GetByIdAsync(Id);
+            var blog = await _blogService.GetByIdAsync(blogId);
 
             if (blog == null)
                 return NotFound();
@@ -78,9 +76,9 @@ namespace blog_rest_api.Controllers.V1
         }
 
         [HttpPut(ApiRoutes.Blogs.Update)]
-        public async Task<IActionResult> Update([FromRoute] Guid blogId, [FromBody] UpdateBlogRequest request)
+        public async Task<IActionResult> Update([FromRoute] string blogId, [FromBody] UpdateBlogRequest request)
         {
-            var userOwnPost = await _blogService.UserOwnsPostAsync(blogId, HttpContext.GetUserId());
+            var userOwnPost = await _blogService.UserOwnsBlogAsync(blogId.ToString(), HttpContext.GetUserId());
 
             if (!userOwnPost)
             {
@@ -100,9 +98,9 @@ namespace blog_rest_api.Controllers.V1
         }
 
         [HttpDelete(ApiRoutes.Blogs.Delete)]
-        public async Task<IActionResult> Delete([FromRoute] Guid blogId)
+        public async Task<IActionResult> Delete([FromRoute] string blogId)
         {
-            var userOwnPost = await _blogService.UserOwnsPostAsync(blogId, HttpContext.GetUserId());
+            var userOwnPost = await _blogService.UserOwnsBlogAsync(blogId.ToString(), HttpContext.GetUserId());
 
             if (!userOwnPost)
             {
