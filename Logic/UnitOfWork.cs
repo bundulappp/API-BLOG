@@ -1,13 +1,7 @@
 ﻿using Data.Data;
 using Logic.Services;
 using Microsoft.AspNetCore.Http;
-using Models.Domain;
 using Models.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Logic
 {
@@ -23,6 +17,7 @@ namespace Logic
         }
 
         public IBlogRepository BlogRepository => new BlogRepository(_httpContextAccessor, _dbContext);
+        public ITagRepository TagRepository => new TagRepository(_httpContextAccessor, _dbContext);
 
     }
 }

@@ -10,39 +10,39 @@ namespace Logic.Services
 
         private readonly BlogDbContext _dbContext;
         private readonly IBlogRepository _blogRepository;
+        private readonly ITagRepository _tagRepository;
 
 
 
 
-        public BlogService(BlogDbContext dbContext, IBlogRepository blogRepository)
+        public BlogService(BlogDbContext dbContext, IBlogRepository blogRepository, ITagRepository tagRepository)
         {
             _dbContext = dbContext;
             _blogRepository = blogRepository;
-
+            _tagRepository = tagRepository;
         }
 
-        public async Task<List<Blog>> GetAllAsync(string? userId = null, PaginationFilter paginationFilter = null)
+        public async Task<List<Blog>> GetAllAsync(string? userId = null, PaginationFilter? paginationFilter = null)
         {
             var blogs = _blogRepository.GetAll(userId, paginationFilter);
             return await Task.FromResult(blogs.ToList());
         }
 
 
-        public async Task<Blog> GetByIdAsync(string blogId) => await _dbContext.Blogs.SingleOrDefaultAsync(x => x.Id == blogId);
+        public async Task<Blog> GetByIdAsync(string blogId) => _blogRepository.GetById(blogId);
 
         public async Task<bool> CreateBlogAsync(Blog blog)
         {
             await AddNewTags(blog);
-            await _dbContext.Blogs.AddAsync(blog);
-            var created = await _dbContext.SaveChangesAsync();
-            return created > 0;
+
+            return _blogRepository.Insert(blog);
         }
 
         private async Task AddNewTags(Blog blog)
         {
             foreach (var tag in blog.Tags)
             {
-                var isAlreadyExist = await _dbContext.Tags.SingleOrDefaultAsync(x => x.Name == tag.TagId);
+                var isAlreadyExist = _blogRepository.GetById(tag.TagId);
 
                 if (isAlreadyExist != null)
                     continue;
@@ -54,34 +54,34 @@ namespace Logic.Services
                     CreatedAt = DateTime.Now.ToLocalTime(),
                     UpdatedAt = DateTime.Now.ToLocalTime(),
                 };
-                await _dbContext.Tags.AddAsync(newTag);
+
+                _tagRepository.Insert(newTag);
             }
         }
 
         public async Task<bool> UpdateBlogAsync(Blog blogToUpdate)
         {
-            _dbContext.Blogs.Update(blogToUpdate);
-            var updated = await _dbContext.SaveChangesAsync();
-            return updated > 0;
+            var isAlreadyExist = _blogRepository.GetById(blogToUpdate.Id.ToString());
+
+            if (isAlreadyExist == null)
+                return false;
+
+            return _blogRepository.Update(blogToUpdate);
         }
 
         public async Task<bool> DeleteBlogAsync(string id)
         {
-            var blog = await GetByIdAsync(id);
+            var blog = _blogRepository.GetById(id);
 
             if (blog == null)
                 return false;
 
-
-            _dbContext.Blogs.Remove(blog);
-            var deleted = await _dbContext.SaveChangesAsync();
-
-            return deleted > 0;
+            return _blogRepository.Delete(blog);
         }
 
-        public async Task<bool> UserOwnsPostAsync(string blogId, string userId)
+        public async Task<bool> UserOwnsPostAsync(Guid blogId, string userId)
         {
-            var blog = _blogRepository.GetById(blogId.ToString());
+            var blog = _blogRepository.GetById(blogId);
             if (blog == null)
                 return false;
 
@@ -91,7 +91,7 @@ namespace Logic.Services
             return true;
         }
 
-        public async Task<Tag> GetTagByIdAsync(string tagId) => await _dbContext.Tags.SingleOrDefaultAsync(x => x.Name == tagId);
+        public async Task<Tag> GetTagByIdAsync(string tagId) => _tagRepository.GetById(tagId);
         public async Task<List<Tag>> GetAllTagsAsync()
         {
             return await _dbContext.Tags.AsNoTracking().ToListAsync();
@@ -101,26 +101,21 @@ namespace Logic.Services
 
         public async Task<bool> CreateSingleTagAsync(Tag tag)
         {
-            var isAlreadyExist = await _dbContext.Tags.FirstOrDefaultAsync(x => x.Name == tag.Name);
+            var isAlreadyExist = _tagRepository.GetById(tag.Name);
 
             if (isAlreadyExist != null)
                 return false;
 
-            await _dbContext.Tags.AddAsync(tag);
-            var created = await _dbContext.SaveChangesAsync();
-            return created > 0;
-
+            return _tagRepository.Insert(tag);
         }
 
         public async Task<bool> DeleteTagAsync(string tagId)
         {
-            var tag = await GetTagByIdAsync(tagId);
-            if (tag == null) return false;
+            var tag = _tagRepository.GetById(tagId);
+            if (tag == null)
+                return false;
 
-            _dbContext.Tags.Remove(tag);
-            var deleted = await _dbContext.SaveChangesAsync();
-
-            return deleted > 0;
+            return _tagRepository.Delete(tag);
         }
     }
 }

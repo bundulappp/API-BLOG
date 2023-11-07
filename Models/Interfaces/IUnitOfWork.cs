@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Models.Interfaces
+﻿namespace Models.Interfaces
 {
     public interface IUnitOfWork
     {
         IBlogRepository BlogRepository { get; }
+        ITagRepository TagRepository { get; }
     }
 }
