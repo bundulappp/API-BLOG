@@ -9,7 +9,6 @@ namespace blog_rest_api.Installers
         public void InstallServices(WebApplicationBuilder builder)
         {
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-            Console.WriteLine(connectionString);
 
             builder.Services.AddDbContext<BlogDbContext>(options =>
                 options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 21))));

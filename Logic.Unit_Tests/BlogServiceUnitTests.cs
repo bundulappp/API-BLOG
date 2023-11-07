@@ -26,7 +26,7 @@ namespace Logic.Unit_Tests
         public async Task UserOwnsPostAsync_WhenUserOwnsIt_ShouldReturnTrue()
         {
             // Arrange
-            var blogId = Guid.NewGuid();
+            var blogId = Guid.NewGuid().ToString();
             var userId = Guid.NewGuid().ToString();
 
             _blogRepositoryMock.Setup(repo => repo.GetById(blogId.ToString()))

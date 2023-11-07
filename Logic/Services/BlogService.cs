@@ -28,7 +28,7 @@ namespace Logic.Services
         }
 
 
-        public async Task<Blog> GetByIdAsync(Guid blogId) => await _dbContext.Blogs.SingleOrDefaultAsync(x => x.Id == blogId);
+        public async Task<Blog> GetByIdAsync(string blogId) => await _dbContext.Blogs.SingleOrDefaultAsync(x => x.Id == blogId);
 
         public async Task<bool> CreateBlogAsync(Blog blog)
         {
@@ -65,7 +65,7 @@ namespace Logic.Services
             return updated > 0;
         }
 
-        public async Task<bool> DeleteBlogAsync(Guid id)
+        public async Task<bool> DeleteBlogAsync(string id)
         {
             var blog = await GetByIdAsync(id);
 
@@ -79,7 +79,7 @@ namespace Logic.Services
             return deleted > 0;
         }
 
-        public async Task<bool> UserOwnsPostAsync(Guid blogId, string userId)
+        public async Task<bool> UserOwnsPostAsync(string blogId, string userId)
         {
             var blog = _blogRepository.GetById(blogId.ToString());
             if (blog == null)

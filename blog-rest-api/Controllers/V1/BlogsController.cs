@@ -43,9 +43,9 @@ namespace blog_rest_api.Controllers.V1
         }
 
         [HttpGet(ApiRoutes.Blogs.Get)]
-        public async Task<IActionResult> Get([FromRoute] Guid Id)
+        public async Task<IActionResult> Get([FromRoute] string blogId)
         {
-            var blog = _blogService.GetByIdAsync(Id);
+            var blog = _blogService.GetByIdAsync(blogId);
 
             if (blog == null)
                 return NotFound();
@@ -56,7 +56,7 @@ namespace blog_rest_api.Controllers.V1
         [HttpPost(ApiRoutes.Blogs.Create)]
         public async Task<IActionResult> Create([FromBody] CreateBlogRequest blogRequest)
         {
-            var newBlogId = Guid.NewGuid();
+            var newBlogId = Guid.NewGuid().ToString();
             var blog = new Blog
             {
                 Id = newBlogId,
@@ -78,7 +78,7 @@ namespace blog_rest_api.Controllers.V1
         }
 
         [HttpPut(ApiRoutes.Blogs.Update)]
-        public async Task<IActionResult> Update([FromRoute] Guid blogId, [FromBody] UpdateBlogRequest request)
+        public async Task<IActionResult> Update([FromRoute] string blogId, [FromBody] UpdateBlogRequest request)
         {
             var userOwnPost = await _blogService.UserOwnsPostAsync(blogId, HttpContext.GetUserId());
 
@@ -100,7 +100,7 @@ namespace blog_rest_api.Controllers.V1
         }
 
         [HttpDelete(ApiRoutes.Blogs.Delete)]
-        public async Task<IActionResult> Delete([FromRoute] Guid blogId)
+        public async Task<IActionResult> Delete([FromRoute] string blogId)
         {
             var userOwnPost = await _blogService.UserOwnsPostAsync(blogId, HttpContext.GetUserId());
 

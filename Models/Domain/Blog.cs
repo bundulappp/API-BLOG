@@ -7,7 +7,7 @@ namespace Models.Domain
     public class Blog
     {
         [Key]
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
         public string UserId { get; set; }
         [ForeignKey(nameof(UserId))]
