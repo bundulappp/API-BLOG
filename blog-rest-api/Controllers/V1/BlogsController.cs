@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using blog_rest_api.Extensions;
 using blog_rest_api.Helpers;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.Contracts.V1;
 using Models.Contracts.V1.Requests;
@@ -11,7 +13,7 @@ using Models.Interfaces;
 
 namespace blog_rest_api.Controllers.V1
 {
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class BlogsController : Controller
     {
         private readonly IBlogService _blogService;
@@ -60,7 +62,7 @@ namespace blog_rest_api.Controllers.V1
                 Id = newBlogId,
                 Name = blogRequest.Name,
                 UserId = HttpContext.GetUserId(),
-                Tags = blogRequest.Tags.Select(x => new BlogTag { BlogId = newBlogId, TagId = x.ToLower() }).ToList(),
+                Tags = blogRequest.Tags.Select(x => new BlogTag { Id = Guid.NewGuid().ToString(), BlogId = newBlogId, TagId = x.ToLower() }).ToList(),
                 CreatedAt = DateTime.Now.ToLocalTime(),
                 UpdatedAt = DateTime.Now.ToLocalTime()
             };

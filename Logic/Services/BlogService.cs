@@ -79,7 +79,7 @@ namespace Logic.Services
             return _blogRepository.Delete(blog);
         }
 
-        public async Task<bool> UserOwnsPostAsync(Guid blogId, string userId)
+        public async Task<bool> UserOwnsBlogAsync(string blogId, string userId)
         {
             var blog = _blogRepository.GetById(blogId);
             if (blog == null)
