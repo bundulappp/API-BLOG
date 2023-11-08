@@ -24,7 +24,12 @@ namespace Logic.Services
 
         public async Task<List<Blog>> GetAllAsync(string? userId = null, PaginationFilter? paginationFilter = null)
         {
-            var blogs = _blogRepository.GetAll(userId, paginationFilter);
+            var blogs = _blogRepository.GetAll(paginationFilter);
+
+            if (!string.IsNullOrEmpty(userId))
+            {
+                blogs = blogs.Where(b => b.UserId == userId);
+            }
             return await Task.FromResult(blogs.ToList());
         }
 

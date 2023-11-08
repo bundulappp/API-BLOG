@@ -1,12 +1,7 @@
 ﻿using Data.Data;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using Models.Domain;
 using Models.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Logic
 {
@@ -22,7 +17,7 @@ namespace Logic
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public virtual IEnumerable<TEntity> GetAll(string? userId = null, PaginationFilter? paginationFilter = null)
+        public virtual IEnumerable<TEntity> GetAll(PaginationFilter? paginationFilter = null)
         {
             var queryable = _dbContext.Set<TEntity>().AsQueryable();
 

@@ -88,7 +88,7 @@ namespace Logic.Unit_Tests
                     new Blog { Id = Guid.NewGuid().ToString()},
                 };
 
-            _blogRepositoryMock.Setup(repo => repo.GetAll(It.IsAny<string>(), It.IsAny<PaginationFilter>())).Returns(blogList);
+            _blogRepositoryMock.Setup(repo => repo.GetAll(It.IsAny<PaginationFilter>())).Returns(blogList);
 
 
             var blogService = new BlogService(_blogDbContextMock.Object, _blogRepositoryMock.Object, _tagRepositoryMock.Object);
@@ -112,7 +112,7 @@ namespace Logic.Unit_Tests
                     new Blog { Id = Guid.NewGuid().ToString(),UserId = userId},
                 };
 
-            _blogRepositoryMock.Setup(repo => repo.GetAll(userId, It.IsAny<PaginationFilter>())).Returns(blogList);
+            _blogRepositoryMock.Setup(repo => repo.GetAll(It.IsAny<PaginationFilter>())).Returns(blogList);
 
 
             var blogService = new BlogService(_blogDbContextMock.Object, _blogRepositoryMock.Object, _tagRepositoryMock.Object);
@@ -128,24 +128,39 @@ namespace Logic.Unit_Tests
         public async Task GetAllAsync_FilteredByPagination_ShouldReturnSubsetOfBlogs()
         {
             //Arrange
-            var PaginationFilter = new PaginationFilter { PageNumber = 1, PageSize = 5 };
+            var paginationFilter = new PaginationFilter { PageNumber = 1, PageSize = 5 };
             var userId = Guid.NewGuid().ToString();
             var blogList = new List<Blog>
                 {
-                    new Blog { Id = Guid.NewGuid().ToString(), UserId = userId },
-                    new Blog { Id = Guid.NewGuid().ToString(),UserId = userId},
-                    new Blog { Id = Guid.NewGuid().ToString(),UserId = userId},
+                    new Blog { Id = Guid.NewGuid().ToString()},
+                    new Blog { Id = Guid.NewGuid().ToString()},
+                    new Blog { Id = Guid.NewGuid().ToString()},
                 };
 
-            _blogRepositoryMock.Setup(repo => repo.GetAll(userId, It.IsAny<PaginationFilter>())).Returns(blogList);
+            _blogRepositoryMock.Setup(repo => repo.GetAll(paginationFilter)).Returns(blogList);
 
 
             var blogService = new BlogService(_blogDbContextMock.Object, _blogRepositoryMock.Object, _tagRepositoryMock.Object);
 
             //Act
-            var result = await blogService.GetAllAsync(userId);
+            var result = await blogService.GetAllAsync(null, paginationFilter);
 
             //Assert 
+            Assert.That(result, Is.EquivalentTo(blogList));
+        }
+
+        [Test]
+        public async Task GetAllAsync_BlogsTableIsEmpty_ShouldReturnEmptyListOfBlogs()
+        {
+            //Arrange
+            var blogList = new List<Blog>();
+
+            _blogRepositoryMock.Setup(repo => repo.GetAll(It.IsAny<PaginationFilter>())).Returns(blogList);
+
+            var blogService = new BlogService(_blogDbContextMock.Object, _blogRepositoryMock.Object, _tagRepositoryMock.Object);
+            //Act
+            var result = await blogService.GetAllAsync();
+            //Assert
             Assert.That(result, Is.EquivalentTo(blogList));
         }
 
