@@ -164,5 +164,54 @@ namespace Logic.Unit_Tests
             Assert.That(result, Is.EquivalentTo(blogList));
         }
 
+        [Test]
+        public async Task GetByIdAsync_BlogNotFound_ShouldReturnNull()
+        {
+            //Arrange
+            var blogId = Guid.NewGuid().ToString();
+            _blogRepositoryMock.Setup(repo => repo.GetById(blogId)).Returns<Blog>(null);
+            var blogService = new BlogService(_blogDbContextMock.Object, _blogRepositoryMock.Object, _tagRepositoryMock.Object);
+
+            //Act
+            var result = await blogService.GetByIdAsync(blogId);
+            //Assert
+            Assert.That(result, Is.EqualTo(null));
+        }
+
+        [Test]
+        public async Task GetByIdAsync_BlogHasFound_ShouldReturnBlogEntity()
+        {
+            //Arrange
+            var blogId = Guid.NewGuid().ToString();
+            var blogEntity = new Blog { Id = blogId };
+            _blogRepositoryMock.Setup(repo => repo.GetById(blogId)).Returns(blogEntity);
+            var blogService = new BlogService(_blogDbContextMock.Object, _blogRepositoryMock.Object, _tagRepositoryMock.Object);
+            //Act
+            var result = await blogService.GetByIdAsync(blogId);
+            //Assert
+            Assert.That(result, Is.EqualTo(blogEntity));
+        }
+
+        [Test]
+        public async Task CreateBlogAsync_SomeOfThePropertiesMissing_ShouldReturnFalse()
+        {
+            //Arrange
+            var incompleteBlog = new Blog
+            {
+                Name = "Sample blog content"
+            };
+
+            _blogRepositoryMock.Setup(repo => repo.Insert(incompleteBlog)).Returns(false);
+
+            var blogService = new BlogService(_blogDbContextMock.Object, _blogRepositoryMock.Object, _tagRepositoryMock.Object);
+
+            //Act
+            var result = await blogService.CreateBlogAsync(incompleteBlog);
+
+            //Assert
+            Assert.IsFalse(result);
+        }
+
+
     }
 }
