@@ -47,7 +47,7 @@ namespace Logic.Services
         {
             foreach (var tag in blog.Tags)
             {
-                var isAlreadyExist = _blogRepository.GetById(tag.TagId);
+                var isAlreadyExist = _tagRepository.GetById(tag.TagId);
 
                 if (isAlreadyExist != null)
                     continue;
@@ -99,7 +99,7 @@ namespace Logic.Services
         public async Task<Tag> GetTagByIdAsync(string tagId) => _tagRepository.GetById(tagId);
         public async Task<List<Tag>> GetAllTagsAsync()
         {
-            return await _dbContext.Tags.AsNoTracking().ToListAsync();
+            return _tagRepository.GetAll().ToList();
         }
 
 
