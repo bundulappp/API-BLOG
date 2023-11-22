@@ -11,9 +11,6 @@ namespace Logic.Services
         private readonly IBlogRepository _blogRepository;
         private readonly ITagRepository _tagRepository;
 
-
-
-
         public BlogService(BlogDbContext dbContext, IBlogRepository blogRepository, ITagRepository tagRepository)
         {
             _dbContext = dbContext;
