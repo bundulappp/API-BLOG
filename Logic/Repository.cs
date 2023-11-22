@@ -1,5 +1,6 @@
 ﻿using Data.Data;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Models.Domain;
 using Models.Interfaces;
 
@@ -17,7 +18,7 @@ namespace Logic
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public virtual IEnumerable<TEntity> GetAll(PaginationFilter? paginationFilter = null)
+        public virtual async Task<IEnumerable<TEntity>> GetAll(PaginationFilter? paginationFilter = null)
         {
             var queryable = _dbContext.Set<TEntity>().AsQueryable();
 
@@ -27,30 +28,33 @@ namespace Logic
                 queryable = queryable.Skip(skip).Take(paginationFilter.PageSize);
             }
 
-            return queryable.ToList();
+            return await queryable.ToListAsync();
         }
 
-        public virtual TEntity GetById(string id)
+        public virtual async Task<TEntity> GetById(string id)
         {
-            return _dbContext.Set<TEntity>().Find(id);
+            return await _dbContext.Set<TEntity>().FindAsync(id);
         }
 
-        public virtual bool Insert(TEntity entity)
+        public virtual async Task<bool> Insert(TEntity entity)
         {
             _dbContext.Set<TEntity>().Add(entity);
-            return _dbContext.SaveChanges() > 0;
+            var result = await _dbContext.SaveChangesAsync();
+            return result > 0;
         }
 
-        public virtual bool Update(TEntity entity)
+        public virtual async Task<bool> Update(TEntity entity)
         {
             _dbContext.Set<TEntity>().Update(entity);
-            return _dbContext.SaveChanges() > 0;
+            var result = await _dbContext.SaveChangesAsync();
+            return result > 0;
         }
 
-        public virtual bool Delete(TEntity entity)
+        public virtual async Task<bool> Delete(TEntity entity)
         {
             _dbContext.Set<TEntity>().Remove(entity);
-            return _dbContext.SaveChanges() > 0;
+            var result = await _dbContext.SaveChangesAsync();
+            return result > 0;
         }
     }
 }
