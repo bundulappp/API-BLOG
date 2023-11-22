@@ -61,6 +61,7 @@ namespace blog_rest_api.Controllers.V1
             {
                 Id = newBlogId,
                 Name = blogRequest.Name,
+                Body = blogRequest.Body,
                 UserId = HttpContext.GetUserId(),
                 Tags = blogRequest.Tags.Select(x => new BlogTag { Id = Guid.NewGuid().ToString(), BlogId = newBlogId, TagId = x.ToLower() }).ToList(),
                 CreatedAt = DateTime.Now.ToLocalTime(),
