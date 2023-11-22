@@ -1,5 +1,4 @@
 ﻿using Data.Data;
-using Microsoft.EntityFrameworkCore;
 using Models.Domain;
 using Models.Interfaces;
 
@@ -22,71 +21,76 @@ namespace Logic.Services
             _tagRepository = tagRepository;
         }
 
-        public async Task<List<Blog>> GetAllAsync(string? userId = null, PaginationFilter? paginationFilter = null)
+        public async Task<IEnumerable<Blog>> GetAllAsync(string? userId = null, PaginationFilter? paginationFilter = null)
         {
-            var blogs = _blogRepository.GetAll(paginationFilter);
+            var blogs = await _blogRepository.GetAll(paginationFilter);
 
             if (!string.IsNullOrEmpty(userId))
             {
-                blogs = blogs.Where(b => b.UserId == userId);
+                return blogs.Where(b => b.UserId == userId);
             }
-            return await Task.FromResult(blogs.ToList());
+            return blogs;
         }
 
 
-        public async Task<Blog> GetByIdAsync(string blogId) => _blogRepository.GetById(blogId);
+        public async Task<Blog> GetByIdAsync(string blogId) => await _blogRepository.GetById(blogId);
 
         public async Task<bool> CreateBlogAsync(Blog blog)
         {
             await AddNewTags(blog);
 
-            return _blogRepository.Insert(blog);
+            return await _blogRepository.Insert(blog);
         }
 
         private async Task AddNewTags(Blog blog)
         {
-            foreach (var tag in blog.Tags)
-            {
-                var isAlreadyExist = _tagRepository.GetById(tag.TagId);
+            var tasks = blog.Tags.Select(async tag =>
+             {
 
-                if (isAlreadyExist != null)
-                    continue;
+                 {
+                     var isAlreadyExist = await _tagRepository.GetById(tag.TagId);
 
-                var newTag = new Tag
-                {
-                    Name = tag.TagId,
-                    UserId = blog.UserId,
-                    CreatedAt = DateTime.Now.ToLocalTime(),
-                    UpdatedAt = DateTime.Now.ToLocalTime(),
-                };
+                     if (isAlreadyExist == null)
+                     {
+                         var newTag = new Tag
+                         {
+                             Name = tag.TagId,
+                             UserId = blog.UserId,
+                             CreatedAt = DateTime.Now.ToLocalTime(),
+                             UpdatedAt = DateTime.Now.ToLocalTime(),
+                         };
 
-                _tagRepository.Insert(newTag);
-            }
+                         await _tagRepository.Insert(newTag);
+                     }
+
+                 }
+             });
+            await Task.WhenAll(tasks);
         }
 
         public async Task<bool> UpdateBlogAsync(Blog blogToUpdate)
         {
-            var isAlreadyExist = _blogRepository.GetById(blogToUpdate.Id.ToString());
+            var isAlreadyExist = await _blogRepository.GetById(blogToUpdate.Id.ToString());
 
             if (isAlreadyExist == null)
                 return false;
 
-            return _blogRepository.Update(blogToUpdate);
+            return await _blogRepository.Update(blogToUpdate);
         }
 
         public async Task<bool> DeleteBlogAsync(string id)
         {
-            var blog = _blogRepository.GetById(id);
+            var blog = await _blogRepository.GetById(id);
 
             if (blog == null)
                 return false;
 
-            return _blogRepository.Delete(blog);
+            return await _blogRepository.Delete(blog);
         }
 
         public async Task<bool> UserOwnsBlogAsync(string blogId, string userId)
         {
-            var blog = _blogRepository.GetById(blogId);
+            var blog = await _blogRepository.GetById(blogId);
             if (blog == null)
                 return false;
 
@@ -96,31 +100,35 @@ namespace Logic.Services
             return true;
         }
 
-        public async Task<Tag> GetTagByIdAsync(string tagId) => _tagRepository.GetById(tagId);
-        public async Task<List<Tag>> GetAllTagsAsync()
+        public async Task<Tag> GetTagByIdAsync(string tagId) => await _tagRepository.GetById(tagId);
+        public async Task<IEnumerable<Tag>> GetAllTagsAsync(string? userId = null, PaginationFilter? paginationFilter = null)
         {
-            return _tagRepository.GetAll().ToList();
+            var tags = await _tagRepository.GetAll(paginationFilter);
+
+            if (!string.IsNullOrEmpty(userId))
+            {
+                tags = tags.Where(t => t.UserId == userId);
+            }
+
+            return tags;
         }
-
-
-
         public async Task<bool> CreateSingleTagAsync(Tag tag)
         {
-            var isAlreadyExist = _tagRepository.GetById(tag.Name);
+            var isAlreadyExist = await _tagRepository.GetById(tag.Name);
 
             if (isAlreadyExist != null)
                 return false;
 
-            return _tagRepository.Insert(tag);
+            return await _tagRepository.Insert(tag);
         }
 
         public async Task<bool> DeleteTagAsync(string tagId)
         {
-            var tag = _tagRepository.GetById(tagId);
+            var tag = await _tagRepository.GetById(tagId);
             if (tag == null)
                 return false;
 
-            return _tagRepository.Delete(tag);
+            return await _tagRepository.Delete(tag);
         }
     }
 }
