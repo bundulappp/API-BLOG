@@ -8,6 +8,7 @@ namespace blog_rest_api.Validators
         public CreateBlogRequestValidator()
         {
             RuleFor(x => x.Name).NotEmpty().Length(1, 250);
+            RuleFor(x => x.Body).NotEmpty().MaximumLength(1000);
         }
     }
 }

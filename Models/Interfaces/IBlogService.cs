@@ -11,7 +11,7 @@ namespace Models.Interfaces
         Task<bool> DeleteBlogAsync(string blogId);
         Task<bool> UserOwnsBlogAsync(string blogId, string userId);
         Task<Tag> GetTagByIdAsync(string tagId);
-        Task<IEnumerable<Tag>> GetAllTagsAsync();
+        Task<IEnumerable<Tag>> GetAllTagsAsync(string? userId = null, PaginationFilter? paginationFilter = null);
         Task<bool> CreateSingleTagAsync(Tag tag);
         Task<bool> DeleteTagAsync(string tagId);
     }
