@@ -30,5 +30,15 @@
             public const string Create = Base + "/tags";
             public const string Delete = Base + "/tags/{tagId}";
         }
+
+        public static class Comments
+        {
+            public const string GetAll = Base + "/comments";
+            public const string Get = Base + "/comments/{commentId}";
+            public const string Create = Base + "/comments";
+            public const string Update = Base + "/comments/{commentId}";
+            public const string Delete = Base + "/comments/{commentId}";
+
+        }
     }
 }
