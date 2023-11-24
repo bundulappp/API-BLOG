@@ -25,6 +25,7 @@ namespace blog_rest_api.Installers
             builder.Services.AddScoped<IBlogRepository, BlogRepository>();
             builder.Services.AddScoped<ITagRepository, TagRepository>();
             builder.Services.AddScoped<IBlogService, BlogService>();
+            builder.Services.AddScoped<ICommentService, CommentService>();
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 

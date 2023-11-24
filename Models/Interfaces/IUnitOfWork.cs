@@ -4,5 +4,6 @@
     {
         IBlogRepository BlogRepository { get; }
         ITagRepository TagRepository { get; }
+        ICommentRepository CommentRepository { get; }
     }
 }

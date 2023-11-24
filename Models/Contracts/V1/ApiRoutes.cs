@@ -8,9 +8,9 @@
 
         public static class Blogs
         {
-            public const string GetAll = Base + "/blogs";
+            public const string GetAll = Base + "/blog";
             public const string Get = Base + "/blog/{blogId}";
-            public const string Create = Base + "/blogs";
+            public const string Create = Base + "/blog";
             public const string Update = Base + "/ blog /{blogId}";
             public const string Delete = Base + "/ blog /{blogId}";
 
@@ -26,18 +26,18 @@
 
         public static class Tags
         {
-            public const string GetAll = Base + "/tags";
-            public const string Create = Base + "/tags";
-            public const string Delete = Base + "/tags/{tagId}";
+            public const string GetAll = Base + "/tag";
+            public const string Create = Base + "/tag";
+            public const string Delete = Base + "/tag/{tagId}";
         }
 
         public static class Comments
         {
-            public const string GetAll = Base + "/comments";
-            public const string Get = Base + "/comments/{commentId}";
-            public const string Create = Base + "/comments";
-            public const string Update = Base + "/comments/{commentId}";
-            public const string Delete = Base + "/comments/{commentId}";
+            public const string GetAll = Base + "/comment";
+            public const string Get = Base + "/comment/{commentId}";
+            public const string Create = Base + "/comment";
+            public const string Update = Base + "/comment/{commentId}";
+            public const string Delete = Base + "/comment/{commentId}";
 
         }
     }

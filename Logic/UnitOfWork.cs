@@ -18,6 +18,7 @@ namespace Logic
 
         public IBlogRepository BlogRepository => new BlogRepository(_httpContextAccessor, _dbContext);
         public ITagRepository TagRepository => new TagRepository(_httpContextAccessor, _dbContext);
+        public ICommentRepository CommentRepository => new CommentRepository(_httpContextAccessor, _dbContext);
 
     }
 }
