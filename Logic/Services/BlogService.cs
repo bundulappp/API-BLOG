@@ -1,5 +1,4 @@
-﻿using Data.Data;
-using Models.Domain;
+﻿using Models.Domain;
 using Models.Interfaces;
 
 namespace Logic.Services
@@ -7,13 +6,11 @@ namespace Logic.Services
     public class BlogService : IBlogService
     {
 
-        private readonly BlogDbContext _dbContext;
         private readonly IBlogRepository _blogRepository;
         private readonly ITagRepository _tagRepository;
 
-        public BlogService(BlogDbContext dbContext, IBlogRepository blogRepository, ITagRepository tagRepository)
+        public BlogService(IBlogRepository blogRepository, ITagRepository tagRepository)
         {
-            _dbContext = dbContext;
             _blogRepository = blogRepository;
             _tagRepository = tagRepository;
         }
