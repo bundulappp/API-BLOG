@@ -6,7 +6,7 @@ using Models.Interfaces;
 
 namespace Logic
 {
-    public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity : class
+    public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity : class, IUserOwnedEntity
     {
         protected readonly BlogDbContext _dbContext;
         protected IHttpContextAccessor _httpContextAccessor;
@@ -18,7 +18,7 @@ namespace Logic
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public virtual async Task<IEnumerable<TEntity>> GetAll(PaginationFilter? paginationFilter = null)
+        public virtual async Task<IEnumerable<TEntity>> GetAll(PaginationFilter? paginationFilter = null, string? userId = null)
         {
             var queryable = _dbContext.Set<TEntity>().AsQueryable();
 
@@ -26,6 +26,11 @@ namespace Logic
             {
                 var skip = (paginationFilter.PageNumber - 1) * paginationFilter.PageSize;
                 queryable = queryable.Skip(skip).Take(paginationFilter.PageSize);
+            }
+
+            if (!string.IsNullOrEmpty(userId))
+            {
+                queryable = queryable.Where(entity => entity.UserId == userId);
             }
 
             return await queryable.ToListAsync();

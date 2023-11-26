@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Models.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Models.Domain
 {
-    public class Comment
+    public class Comment : IUserOwnedEntity
     {
         [Key]
         public string Id { get; set; }

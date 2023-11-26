@@ -19,15 +19,8 @@ namespace Logic.Services
         }
 
         public async Task<IEnumerable<Blog>> GetAllAsync(string? userId = null, PaginationFilter? paginationFilter = null)
-        {
-            var blogs = await _blogRepository.GetAll(paginationFilter);
+            => await _blogRepository.GetAll(paginationFilter, userId);
 
-            if (!string.IsNullOrEmpty(userId))
-            {
-                return blogs.Where(b => b.UserId == userId);
-            }
-            return blogs;
-        }
 
 
         public async Task<Blog> GetByIdAsync(string blogId) => await _blogRepository.GetById(blogId);
@@ -99,16 +92,8 @@ namespace Logic.Services
 
         public async Task<Tag> GetTagByIdAsync(string tagId) => await _tagRepository.GetById(tagId);
         public async Task<IEnumerable<Tag>> GetAllTagsAsync(string? userId = null, PaginationFilter? paginationFilter = null)
-        {
-            var tags = await _tagRepository.GetAll(paginationFilter);
+             => await _tagRepository.GetAll(paginationFilter);
 
-            if (!string.IsNullOrEmpty(userId))
-            {
-                tags = tags.Where(t => t.UserId == userId);
-            }
-
-            return tags;
-        }
         public async Task<bool> CreateSingleTagAsync(Tag tag)
         {
             var isAlreadyExist = await _tagRepository.GetById(tag.Name);

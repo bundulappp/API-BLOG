@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Data.Data;
+using Microsoft.AspNetCore.Http;
+using Models.Domain;
+using Models.Interfaces;
 
 namespace Logic.Services
 {
-    internal class CommentRepository
+    public class CommentRepository : Repository<Comment>, ICommentRepository
     {
+        public CommentRepository(IHttpContextAccessor httpContextAccessor, BlogDbContext dbContext) : base(httpContextAccessor, dbContext)
+        {
+        }
     }
 }
