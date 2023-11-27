@@ -140,17 +140,8 @@ namespace blog_rest_api.Controllers.V1
         [HttpPost(ApiRoutes.Blogs.CreateComment)]
         public async Task<IActionResult> CreateComment([FromBody] CreateCommentRequest createCommentRequest)
         {
-            var commentId = Guid.NewGuid().ToString();
-            var comment = new Comment
-            {
-                Id = commentId,
-                Body = createCommentRequest.Body,
-                BlogId = createCommentRequest.BlogId,
-                UserId = HttpContext.GetUserId(),
-                CreatedAt = DateTime.Now.ToLocalTime(),
-                UpdatedAt = DateTime.Now.ToLocalTime(),
-                LikesCounter = 0,
-            };
+            var comment = _mapper.Map<Comment>(createCommentRequest);
+            comment.UserId = HttpContext.GetUserId();
 
             var result = await _commentService.CreateCommentAsnyc(comment);
 
