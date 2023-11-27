@@ -11,9 +11,10 @@
             public const string GetAll = Base + "/blog";
             public const string Get = Base + "/blog/{blogId}";
             public const string Create = Base + "/blog";
-            public const string Update = Base + "/ blog /{blogId}";
-            public const string Delete = Base + "/ blog /{blogId}";
-
+            public const string Update = Base + "/blog/{blogId}";
+            public const string Delete = Base + "/blog/{blogId}";
+            public const string CreateComment = Base + "/blog/comment";
+            public const string GetAllCommentForBlog = Base + "/blog/{blogId}/comment";
         }
 
         public static class Identity

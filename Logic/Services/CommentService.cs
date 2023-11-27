@@ -11,14 +11,14 @@ namespace Logic.Services
             _commentRepository = commentRepository;
             _blogRepository = blogRepository;
         }
-        public async Task<IEnumerable<Comment>> GetAllBlogsCommentAsnyc(string blogId)
+        public async Task<IEnumerable<Comment>> GetAllBlogsCommentAsnyc(string blogId, PaginationFilter? paginationFilter = null)
         {
             var isBlogExist = await _blogRepository.GetById(blogId);
             if (isBlogExist == null)
             {
                 throw new KeyNotFoundException($"Blog is not found with id: {blogId}");
             }
-            return await _commentRepository.GetAllBlogsCommentAsync(blogId);
+            return await _commentRepository.GetAllBlogsCommentAsync(blogId, paginationFilter);
         }
         public async Task<bool> CreateCommentAsnyc(Comment comment)
         {

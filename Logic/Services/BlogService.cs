@@ -86,7 +86,6 @@ namespace Logic.Services
 
             return true;
         }
-
         public async Task<Tag> GetTagByIdAsync(string tagId) => await _tagRepository.GetById(tagId);
         public async Task<IEnumerable<Tag>> GetAllTagsAsync(string? userId = null, PaginationFilter? paginationFilter = null)
              => await _tagRepository.GetAll(paginationFilter);

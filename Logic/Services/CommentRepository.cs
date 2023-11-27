@@ -12,7 +12,7 @@ namespace Logic.Services
         {
         }
 
-        public async Task<IEnumerable<Comment>> GetAllBlogsCommentAsync(string blogId)
+        public async Task<IEnumerable<Comment>> GetAllBlogsCommentAsync(string blogId, PaginationFilter? paginationFilter = null)
         {
             var queryable = _dbContext.Set<Comment>().AsQueryable();
 

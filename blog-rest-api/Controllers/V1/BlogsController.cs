@@ -19,11 +19,13 @@ namespace blog_rest_api.Controllers.V1
         private readonly IBlogService _blogService;
         private readonly IMapper _mapper;
         private readonly IUriService _uriService;
-        public BlogsController(IBlogService blogService, IMapper mapper, IUriService uriService)
+        private readonly ICommentService _commentService;
+        public BlogsController(IBlogService blogService, IMapper mapper, IUriService uriService, ICommentService commentService)
         {
             _blogService = blogService;
             _mapper = mapper;
             _uriService = uriService;
+            _commentService = commentService;
         }
 
         [HttpGet(ApiRoutes.Blogs.GetAll)]
@@ -117,6 +119,47 @@ namespace blog_rest_api.Controllers.V1
                 return NotFound();
 
             return NoContent();
+        }
+
+        [HttpGet(ApiRoutes.Blogs.GetAllCommentForBlog)]
+        public async Task<IActionResult> GetAllCommentsForBlog([FromRoute] string blogId, [FromQuery] PaginationQuery? paginationQuery = null)
+        {
+            var paginationFilter = _mapper.Map<PaginationFilter>(paginationQuery);
+            var comments = await _commentService.GetAllBlogsCommentAsnyc(blogId, paginationFilter);
+            var commentResponse = _mapper.Map<List<CommentResponse>>(comments);
+
+            if (paginationFilter == null || paginationFilter.PageNumber < 1 || paginationFilter.PageSize < 1)
+            {
+                return Ok(new PagedResponse<CommentResponse>(commentResponse));
+            }
+
+            var paginationResponse = PaginationHelpers.CreatePaginatedResponse(_uriService, paginationFilter, commentResponse);
+            return Ok(paginationResponse);
+        }
+
+        [HttpPost(ApiRoutes.Blogs.CreateComment)]
+        public async Task<IActionResult> CreateComment([FromBody] CreateCommentRequest createCommentRequest)
+        {
+            var commentId = Guid.NewGuid().ToString();
+            var comment = new Comment
+            {
+                Id = commentId,
+                Body = createCommentRequest.Body,
+                BlogId = createCommentRequest.BlogId,
+                UserId = HttpContext.GetUserId(),
+                CreatedAt = DateTime.Now.ToLocalTime(),
+                UpdatedAt = DateTime.Now.ToLocalTime(),
+                LikesCounter = 0,
+            };
+
+            var result = await _commentService.CreateCommentAsnyc(comment);
+
+            if (!result)
+                return BadRequest();
+
+            var location = _uriService.GetBlogUri(comment.Id.ToString());
+
+            return Created(location, new Response<CommentResponse>(_mapper.Map<CommentResponse>(comment)));
         }
     }
 }

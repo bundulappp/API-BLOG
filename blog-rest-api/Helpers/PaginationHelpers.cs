@@ -10,10 +10,10 @@ namespace blog_rest_api.Helpers
         internal static PagedResponse<T> CreatePaginatedResponse<T>(IUriService uriService, PaginationFilter paginationFilter, List<T> response)
         {
             var nextPage = paginationFilter.PageNumber >= 1
-               ? uriService.GetAllBlogUri(new PaginationQuery(paginationFilter.PageNumber + 1, paginationFilter.PageSize)).ToString() : null;
+               ? uriService.GetAllUri(new PaginationQuery(paginationFilter.PageNumber + 1, paginationFilter.PageSize)).ToString() : null;
 
             var previousPage = paginationFilter.PageNumber - 1 >= 1
-                ? uriService.GetAllBlogUri(new PaginationQuery(paginationFilter.PageNumber - 1, paginationFilter.PageSize)).ToString() : null;
+                ? uriService.GetAllUri(new PaginationQuery(paginationFilter.PageNumber - 1, paginationFilter.PageSize)).ToString() : null;
 
             return new PagedResponse<T>
             {

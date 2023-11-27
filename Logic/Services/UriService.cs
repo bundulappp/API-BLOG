@@ -16,7 +16,12 @@ namespace Logic.Services
         {
             return new Uri(_baseUri + ApiRoutes.Blogs.Get.Replace("{blogId}", blogId));
         }
-        public Uri GetAllBlogUri(PaginationQuery paginationQuery = null)
+
+        public Uri GetCommentUri(string commentId)
+        {
+            return new Uri(_baseUri + ApiRoutes.Comments.Get.Replace("{commentId}", commentId));
+        }
+        public Uri GetAllUri(PaginationQuery paginationQuery = null)
         {
             var uri = new Uri(_baseUri);
 
@@ -30,6 +35,5 @@ namespace Logic.Services
 
             return new Uri(modifiedUri);
         }
-
     }
 }

@@ -20,15 +20,17 @@ namespace blog_rest_api.Installers
             builder.Configuration.Bind(nameof(JwtSettings), jwtSettings);
             builder.Services.AddSingleton(jwtSettings);
             builder.Services.AddAutoMapper(typeof(DomainToResponseProfile), typeof(RequestToDomainProfile));
-            builder.Services.AddScoped<IIdentityService, IdentityService>();
 
             builder.Services.AddScoped<IBlogRepository, BlogRepository>();
             builder.Services.AddScoped<ITagRepository, TagRepository>();
+            builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+
+            builder.Services.AddScoped<IIdentityService, IdentityService>();
             builder.Services.AddScoped<IBlogService, BlogService>();
             builder.Services.AddScoped<ICommentService, CommentService>();
 
-            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddFluentValidationAutoValidation();
             builder.Services.AddValidatorsFromAssemblyContaining<MvcInstaller>();
             builder.Services.AddMvc(opt =>

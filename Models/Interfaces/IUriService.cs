@@ -5,6 +5,6 @@ namespace Models.Interfaces
     public interface IUriService
     {
         Uri GetBlogUri(string blogId);
-        Uri GetAllBlogUri(PaginationQuery? paginationQuery = null);
+        Uri GetAllUri(PaginationQuery? paginationQuery = null);
     }
 }
