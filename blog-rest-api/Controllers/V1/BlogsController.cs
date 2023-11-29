@@ -136,21 +136,5 @@ namespace blog_rest_api.Controllers.V1
             var paginationResponse = PaginationHelpers.CreatePaginatedResponse(_uriService, paginationFilter, commentResponse);
             return Ok(paginationResponse);
         }
-
-        [HttpPost(ApiRoutes.Blogs.CreateComment)]
-        public async Task<IActionResult> CreateComment([FromBody] CreateCommentRequest createCommentRequest)
-        {
-            var comment = _mapper.Map<Comment>(createCommentRequest);
-            comment.UserId = HttpContext.GetUserId();
-
-            var result = await _commentService.CreateCommentAsnyc(comment);
-
-            if (!result)
-                return BadRequest();
-
-            var location = _uriService.GetBlogUri(comment.Id.ToString());
-
-            return Created(location, new Response<CommentResponse>(_mapper.Map<CommentResponse>(comment)));
-        }
     }
 }

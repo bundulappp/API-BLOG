@@ -20,6 +20,8 @@ namespace Logic.Services
             }
             return await _commentRepository.GetAllBlogsCommentAsync(blogId, paginationFilter);
         }
+
+        public async Task<Comment> Get(string commentId) => await _commentRepository.GetById(commentId);
         public async Task<bool> CreateCommentAsnyc(Comment comment)
         {
             return await _commentRepository.Insert(comment);
@@ -35,7 +37,19 @@ namespace Logic.Services
             return await _commentRepository.Delete(comment);
         }
 
+        public async Task<bool> UserOwnsComment(string commentId, string userId)
+        {
+            var comment = await _commentRepository.GetById(commentId);
 
+            if (comment != null)
+                return false;
 
+            return comment?.UserId == userId;
+        }
+
+        public async Task<bool> UpdateCommentAsync(Comment comment)
+        {
+            return await _commentRepository.Update(comment);
+        }
     }
 }

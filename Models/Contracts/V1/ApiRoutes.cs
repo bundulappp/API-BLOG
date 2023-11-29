@@ -13,7 +13,6 @@
             public const string Create = Base + "/blog";
             public const string Update = Base + "/blog/{blogId}";
             public const string Delete = Base + "/blog/{blogId}";
-            public const string CreateComment = Base + "/blog/comment";
             public const string GetAllCommentForBlog = Base + "/blog/{blogId}/comment";
         }
 
@@ -34,7 +33,6 @@
 
         public static class Comments
         {
-            public const string GetAll = Base + "/comment";
             public const string Get = Base + "/comment/{commentId}";
             public const string Create = Base + "/comment";
             public const string Update = Base + "/comment/{commentId}";

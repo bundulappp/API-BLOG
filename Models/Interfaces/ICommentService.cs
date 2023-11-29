@@ -7,8 +7,8 @@ namespace Models.Interfaces
         Task<IEnumerable<Comment>> GetAllBlogsCommentAsnyc(string blogId, PaginationFilter? paginationFilter = null);
         Task<bool> CreateCommentAsnyc(Comment comment);
         Task<bool> DeleteCommentAsync(string commentId);
-
-
-
+        Task<bool> UserOwnsComment(string commentId, string userId);
+        Task<Comment> Get(string commentId);
+        Task<bool> UpdateCommentAsync(Comment comment);
     }
 }
