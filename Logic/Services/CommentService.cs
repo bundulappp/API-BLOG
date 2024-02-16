@@ -41,7 +41,7 @@ namespace Logic.Services
         {
             var comment = await _commentRepository.GetById(commentId);
 
-            if (comment != null)
+            if (comment == null)
                 return false;
 
             return comment?.UserId == userId;

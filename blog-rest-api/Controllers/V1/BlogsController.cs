@@ -87,7 +87,7 @@ namespace blog_rest_api.Controllers.V1
 
             if (!userOwnPost)
             {
-                return BadRequest(new { error = "You do nor own this blog" });
+                return BadRequest(new { error = "You do not own this blog" });
 
             }
 

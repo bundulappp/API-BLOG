@@ -71,7 +71,7 @@ namespace blog_rest_api.Controllers.V1
             var userOwnsComment = await _commentService.UserOwnsComment(commentId, HttpContext.GetUserId());
 
             if (!userOwnsComment)
-                return BadRequest(new { error = "You do not own this comment!" });
+                return BadRequest(new { error = "Comment has not found / You do not own this comment!" });
 
             var deleted = await _commentService.DeleteCommentAsync(commentId);
 
