@@ -12,10 +12,10 @@ namespace blog_rest_api.Filters
             {
                 // If the ModelState is invalid, filter out the errors present in the ModelState.
                 var errorsInModelState = context.ModelState
-                    .Where(x => x.Value.Errors.Count > 0)
+                    .Where(x => x.Value?.Errors.Count > 0)
                     .ToDictionary(
                         keyValuePair => keyValuePair.Key,
-                        keyValuePair => keyValuePair.Value.Errors.Select(x => x.ErrorMessage)
+                        keyValuePair => keyValuePair.Value?.Errors.Select(x => x.ErrorMessage)
                     )
                     .ToArray();
 
