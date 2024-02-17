@@ -6,20 +6,20 @@ jobs:
   build-docker-image:
     runs-on: self-hosted
     steps:
-    - name: Checkout API
-    - uses: actions/checkout@v3
+      - name: Checkout API
+        uses: actions/checkout@v3
 
-    - name: Login to GitHub Container Registry
-      uses: docker/login-action@v2
-      with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
     
-    - name: Build and push
-      uses: docker/build-push-action@v3
-      with:
-        context: API-BLOG/.
-        file: ./API-BLOG/Dockerfile
-        push: true
-        tags: ghcr.io/bundulappp/API-BLOG/blog-rest-api:latest
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: API-BLOG/.
+          file: ./API-BLOG/Dockerfile
+          push: true
+          tags: ghcr.io/bundulappp/blog-rest-api:latest
