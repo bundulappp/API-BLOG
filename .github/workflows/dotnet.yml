@@ -22,4 +22,4 @@ jobs:
         context: API-BLOG/.
         file: ./API-BLOG/Dockerfile
         push: true
-        tags: ghcr.io/bundulappp/blog-rest-api:latest
+        tags: ghcr.io/bundulappp/API-BLOG/blog-rest-api:latest
