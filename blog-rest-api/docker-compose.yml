@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    depends_on:
+      - db
+
+  db:
+    image: mysql:mysql:8.0.29
+    environment:
+      MYSQL_ROOT_PASSWORD: qpu0DF00
+      MYSQL_DATABASE: transport
+      MYSQL_USER: transport
+      MYSQL_PASSWORD: qpu0DF00
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:
