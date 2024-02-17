@@ -1,4 +1,4 @@
-﻿using blog_rest_api.Services;
+﻿using Data.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,14 +9,16 @@ namespace blog_rest_api.Installers
         public void InstallServices(WebApplicationBuilder builder)
         {
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-            builder.Services.AddDbContext<blog_rest_api.Data.DbContext>(options =>
-                options.UseSqlServer(connectionString));
+            connectionString = connectionString.Replace("DATABASE_PASSWORD", Environment.GetEnvironmentVariable("DATABASE_PASSWORD"));
+            builder.Services.AddDbContext<BlogDbContext>(options =>
+                options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 21))));
+
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<blog_rest_api.Data.DbContext>();
-
-            builder.Services.AddSingleton<IBlogService, BlogService>();
+            builder.Services
+                .AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<BlogDbContext>();
         }
     }
 }

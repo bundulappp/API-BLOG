@@ -1,51 +1,140 @@
-﻿using blog_rest_api.Contracts.V1;
-using blog_rest_api.Contracts.V1.Request;
-using blog_rest_api.Contracts.V1.Responses;
-using blog_rest_api.Domain;
-using blog_rest_api.Services;
+﻿using AutoMapper;
+using blog_rest_api.Extensions;
+using blog_rest_api.Helpers;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Models.Contracts.V1;
+using Models.Contracts.V1.Requests;
+using Models.Contracts.V1.Requests.Queries;
+using Models.Contracts.V1.Responses;
+using Models.Domain;
+using Models.Interfaces;
 
 namespace blog_rest_api.Controllers.V1
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class BlogsController : Controller
     {
-        private IBlogService _blogService;
-
-        public BlogsController(IBlogService blogService)
+        private readonly IBlogService _blogService;
+        private readonly IMapper _mapper;
+        private readonly IUriService _uriService;
+        private readonly ICommentService _commentService;
+        public BlogsController(IBlogService blogService, IMapper mapper, IUriService uriService, ICommentService commentService)
         {
             _blogService = blogService;
-
+            _mapper = mapper;
+            _uriService = uriService;
+            _commentService = commentService;
         }
+
         [HttpGet(ApiRoutes.Blogs.GetAll)]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] string? userId = null, [FromQuery] PaginationQuery? paginationQuery = null)
         {
-            return Ok(_blogService.GetAll());
+            var paginationFilter = _mapper.Map<PaginationFilter>(paginationQuery);
+            var blogs = await _blogService.GetAllAsync(userId, paginationFilter);
+            var blogsResponse = _mapper.Map<List<BlogResponse>>(blogs);
+
+            if (paginationFilter == null || paginationFilter.PageNumber < 1 || paginationFilter.PageSize < 1)
+            {
+                return Ok(new PagedResponse<BlogResponse>(blogsResponse));
+            }
+
+            var paginationResponse = PaginationHelpers.CreatePaginatedResponse(_uriService, paginationFilter, blogsResponse);
+            return Ok(paginationResponse);
         }
 
         [HttpGet(ApiRoutes.Blogs.Get)]
-        public IActionResult Get([FromRoute] Guid Id)
+        public async Task<IActionResult> Get([FromRoute] string blogId)
         {
-            var blog = _blogService.GetById(Id);
+            var blog = await _blogService.GetByIdAsync(blogId);
 
             if (blog == null)
                 return NotFound();
 
-            return Ok(blog);
+            return Ok(new Response<BlogResponse>(_mapper.Map<BlogResponse>(blog)));
         }
 
         [HttpPost(ApiRoutes.Blogs.Create)]
-        public IActionResult Create([FromBody] CreateBlogRequest blogRequest)
+        public async Task<IActionResult> Create([FromBody] CreateBlogRequest blogRequest)
         {
-            var blog = new Blog { Id = blogRequest.Id };
+            var newBlogId = Guid.NewGuid().ToString();
+            var blog = new Blog
+            {
+                Id = newBlogId,
+                Name = blogRequest.Name,
+                Body = blogRequest.Body,
+                UserId = HttpContext.GetUserId(),
+                Tags = blogRequest.Tags.Select(x => new BlogTag { Id = Guid.NewGuid().ToString(), BlogId = newBlogId, TagId = x.ToLower() }).ToList(),
+                CreatedAt = DateTime.Now.ToLocalTime(),
+                UpdatedAt = DateTime.Now.ToLocalTime()
+            };
 
-            if (blogRequest.Id != Guid.Empty)
-                blog.Id = Guid.NewGuid();
+            var result = await _blogService.CreateBlogAsync(blog);
 
-            var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
-            var locationUri = baseUrl + "/" + ApiRoutes.Blogs.Get.Replace("{blogId}", blog.Id.ToString());
+            if (!result)
+                return BadRequest();
 
-            var response = new CreateBlogResponse { Id = blog.Id };
-            return Created(locationUri, response);
+            var location = _uriService.GetBlogUri(blog.Id.ToString());
+
+            return Created(location, new Response<BlogResponse>(_mapper.Map<BlogResponse>(blog)));
+        }
+
+        [HttpPut(ApiRoutes.Blogs.Update)]
+        public async Task<IActionResult> Update([FromRoute] string blogId, [FromBody] UpdateBlogRequest request)
+        {
+            var userOwnPost = await _blogService.UserOwnsBlogAsync(blogId.ToString(), HttpContext.GetUserId());
+
+            if (!userOwnPost)
+            {
+                return BadRequest(new { error = "You do not own this blog" });
+
+            }
+
+            var blog = await _blogService.GetByIdAsync(blogId);
+            blog.Name = request.Name;
+
+            var updated = await _blogService.UpdateBlogAsync(blog);
+
+            if (updated)
+                return Ok(new Response<BlogResponse>(_mapper.Map<BlogResponse>(blog)));
+
+            return NotFound();
+        }
+
+        [HttpDelete(ApiRoutes.Blogs.Delete)]
+        public async Task<IActionResult> Delete([FromRoute] string blogId)
+        {
+            var userOwnPost = await _blogService.UserOwnsBlogAsync(blogId.ToString(), HttpContext.GetUserId());
+
+            if (!userOwnPost)
+            {
+                return BadRequest(new { error = "You do nor own this blog" });
+
+            }
+
+            var deleted = await _blogService.DeleteBlogAsync(blogId);
+
+            if (!deleted)
+                return NotFound();
+
+            return NoContent();
+        }
+
+        [HttpGet(ApiRoutes.Blogs.GetAllCommentForBlog)]
+        public async Task<IActionResult> GetAllCommentsForBlog([FromRoute] string blogId, [FromQuery] PaginationQuery? paginationQuery = null)
+        {
+            var paginationFilter = _mapper.Map<PaginationFilter>(paginationQuery);
+            var comments = await _commentService.GetAllBlogsCommentAsnyc(blogId, paginationFilter);
+            var commentResponse = _mapper.Map<List<CommentResponse>>(comments);
+
+            if (paginationFilter == null || paginationFilter.PageNumber < 1 || paginationFilter.PageSize < 1)
+            {
+                return Ok(new PagedResponse<CommentResponse>(commentResponse));
+            }
+
+            var paginationResponse = PaginationHelpers.CreatePaginatedResponse(_uriService, paginationFilter, commentResponse);
+            return Ok(paginationResponse);
         }
     }
 }
