@@ -19,7 +19,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
-          context: ./blog-rest-api
+          context: .
           file: ./blog-rest-api/Dockerfile
           push: true
           tags: ghcr.io/bundulappp/blog-rest-api:latest
