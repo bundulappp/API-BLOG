@@ -10,13 +10,13 @@ WORKDIR /src
 COPY ["blog-rest-api.csproj", "./"]
 RUN dotnet restore "blog-rest-api.csproj"
 # The context is the current directory, so just copy everything from the current directory
-#COPY . .
-#RUN dotnet build "blog-rest-api.csproj" -c $BUILD_CONFIGURATION -o /app/build
+COPY . .
+RUN dotnet build "blog-rest-api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-#FROM build AS publish
-#RUN dotnet publish "blog-rest-api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+FROM build AS publish
+RUN dotnet publish "blog-rest-api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
-#FROM base AS final
-#WORKDIR /app
-#COPY --from=publish /app/publish .
-#ENTRYPOINT ["dotnet", "blog-rest-api.dll"]
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "blog-rest-api.dll"]
