@@ -1,5 +1,3 @@
-#See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 USER app
 WORKDIR /app
@@ -9,17 +7,17 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Transport-API/Transport-API.csproj", "Transport-API/"]
-RUN dotnet restore "./Transport-API/./Transport-API.csproj"
+COPY ["blog-rest-api/blog-rest-api.csproj", "blog-rest-api/"]
+RUN dotnet restore "blog-rest-api/blog-rest-api.csproj"
 COPY . .
-WORKDIR "/src/Transport-API"
-RUN dotnet build "./Transport-API.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/blog-rest-api"
+RUN dotnet build "blog-rest-api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Transport-API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "blog-rest-api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Transport-API.dll"]
+ENTRYPOINT ["dotnet", "blog-rest-api.dll"]
