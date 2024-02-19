@@ -12,7 +12,7 @@ COPY . .
 RUN dotnet build "blog-rest-api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "blog-rest-api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "blog-rest-api.csproj" -c $BUILD_CONFIGURATION -o /app/publish -p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
