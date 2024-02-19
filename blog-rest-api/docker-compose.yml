@@ -15,8 +15,8 @@ services:
     image: mysql:mysql:8.0.29
     environment:
       MYSQL_ROOT_PASSWORD: qpu0DF00
-      MYSQL_DATABASE: transport
-      MYSQL_USER: transport
+      MYSQL_DATABASE: blogapi
+      MYSQL_USER: blog
       MYSQL_PASSWORD: qpu0DF00
     ports:
       - "3306:3306"
