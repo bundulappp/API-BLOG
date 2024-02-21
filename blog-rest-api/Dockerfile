@@ -1,5 +1,5 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /src
+WORKDIR /app
 COPY . .
 RUN dotnet restore "blog-rest-api.csproj"
 COPY . .
