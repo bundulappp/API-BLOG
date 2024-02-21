@@ -13,13 +13,6 @@ var installers = typeof(Program).Assembly.ExportedTypes.Where(x =>
 installers.ForEach(installer => installer.InstallServices(builder));
 
 var app = builder.Build();
-using (var serviceScope = app.Services.CreateScope())
-{
-    var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
-
-    await RoleAndUserInitializer.Initialize(roleManager, userManager);
-}
 
 var swaggerOptions = new SwaggerOptions();
 app.Configuration.GetSection(nameof(SwaggerOptions)).Bind(swaggerOptions);
@@ -34,6 +27,18 @@ app.UseSwaggerUI(option =>
     option.SwaggerEndpoint(swaggerOptions.UiEndpoint, swaggerOptions.Description);
 });
 
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseMigrationsEndPoint();
+}
+else
+{
+    app.UseExceptionHandler("/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
+}
+
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -46,16 +51,12 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+using (var serviceScope = app.Services.CreateScope())
 {
-    app.UseMigrationsEndPoint();
-}
-else
-{
-    app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+
+    await RoleAndUserInitializer.Initialize(roleManager, userManager);
 }
 
 app.UseHttpsRedirection();
