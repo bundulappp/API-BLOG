@@ -1,6 +1,6 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY ["blog-rest-api/blog-rest-api.csproj", "blog-rest-api/"]
+COPY ["blog-rest-api.csproj", "./"]
 RUN dotnet restore "blog-rest-api/blog-rest-api.csproj"
 
 COPY . .
