@@ -1,17 +1,17 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
-WORKDIR /app
-
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
 COPY ["blog-rest-api/blog-rest-api.csproj", "blog-rest-api/"]
 RUN dotnet restore "blog-rest-api/blog-rest-api.csproj"
 
-COPY . ./
-WORKDIR "/app/blog-rest-api"
+COPY . .
+WORKDIR "/src/blog-rest-api"
 RUN dotnet build "blog-rest-api.csproj" -c Release -o /app/build
 
-FROM build-env AS publish
-RUN dotnet publish "blog-rest-api.csproj" -c Release -o /app/publish --no-restore
+FROM build AS publish
+RUN dotnet publish "blog-rest-api.csproj" -c Release -o /app/publish
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Blog-Rest-Api.dll"]
+ENTRYPOINT ["dotnet", "blog-rest-api.dll"]
