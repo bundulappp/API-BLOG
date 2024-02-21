@@ -2,6 +2,7 @@ using blog_rest_api.Installers;
 using Data.Data;
 using Data.Options;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +33,18 @@ app.UseSwaggerUI(option =>
 {
     option.SwaggerEndpoint(swaggerOptions.UiEndpoint, swaggerOptions.Description);
 });
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var dbContext = services.GetRequiredService<BlogDbContext>();
+    var pendingMigrations = await dbContext.Database.GetPendingMigrationsAsync();
+
+    if (pendingMigrations.Any())
+    {
+        await dbContext.Database.MigrateAsync();
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
