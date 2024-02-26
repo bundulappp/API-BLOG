@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Models.Domain;
 using Models.Interfaces;
 
-namespace Logic
+namespace Logic.Repositories
 {
     public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity : class, IUserOwnedEntity
     {

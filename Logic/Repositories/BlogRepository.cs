@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Logic.Services
+namespace Logic.Repositories
 {
     public class BlogRepository : Repository<Blog>, IBlogRepository
     {

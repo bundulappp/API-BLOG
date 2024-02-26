@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Models.Domain;
 using Models.Interfaces;
 
-namespace Logic.Services
+namespace Logic.Repositories
 {
     public class CommentRepository : Repository<Comment>, ICommentRepository
     {

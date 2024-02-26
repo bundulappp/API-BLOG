@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Models.Domain;
 using Models.Interfaces;
 
-namespace Logic.Services
+namespace Logic.Repositories
 {
     public class TagRepository : Repository<Tag>, ITagRepository
     {
