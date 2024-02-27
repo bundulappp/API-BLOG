@@ -8,7 +8,7 @@ namespace Models.Interfaces
         Task<bool> CreateCommentAsnyc(Comment comment);
         Task<bool> DeleteCommentAsync(string commentId);
         Task<bool> UserOwnsComment(string commentId, string userId);
-        Task<Comment> Get(string commentId);
+        Task<Comment> GetAsync(string commentId);
         Task<bool> UpdateCommentAsync(Comment comment);
     }
 }
