@@ -19,7 +19,7 @@ namespace Logic.Services
             return await _unitOfWork.CommentRepository.GetAllBlogsCommentAsync(blogId, paginationFilter);
         }
 
-        public async Task<Comment> Get(string commentId) => await _unitOfWork.CommentRepository.GetById(commentId);
+        public async Task<Comment> GetAsync(string commentId) => await _unitOfWork.CommentRepository.GetById(commentId);
         public async Task<bool> CreateCommentAsnyc(Comment comment)
         {
             return await _unitOfWork.CommentRepository.Insert(comment);

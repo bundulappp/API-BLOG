@@ -54,7 +54,7 @@ namespace blog_rest_api.Controllers.V1
             if (!userOwnsComment)
                 return BadRequest(new { error = "You do not own this comment!" });
 
-            var comment = await _commentService.Get(commentId);
+            var comment = await _commentService.GetAsync(commentId);
             comment.Body = updateCommentRequest.Body;
 
             var updated = await _commentService.UpdateCommentAsync(comment);
