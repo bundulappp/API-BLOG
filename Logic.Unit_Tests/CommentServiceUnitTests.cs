@@ -8,13 +8,12 @@ namespace Logic.Unit_Tests
     [TestFixture]
     public class CommentServiceUnitTests
     {
-        private Mock<IBlogRepository> _blogRepositoryMock;
-        private Mock<ICommentRepository> _commentRepositoryMock;
+        private Mock<IUnitOfWork> _unitOfWorkMock;
         [SetUp]
         public void Setup()
         {
-            _blogRepositoryMock = new Mock<IBlogRepository>();
-            _commentRepositoryMock = new Mock<ICommentRepository>();
+            _unitOfWorkMock = new Mock<IUnitOfWork>();
+
         }
 
         [Test]
@@ -27,9 +26,9 @@ namespace Logic.Unit_Tests
                 Body = "Blog test content",
             };
 
-            _commentRepositoryMock.Setup(repo => repo.Insert(incompleteComment)).ReturnsAsync(false);
+            _unitOfWorkMock.Setup(unit => unit.CommentRepository.Insert(incompleteComment)).ReturnsAsync(false);
 
-            var commentService = new CommentService(_commentRepositoryMock.Object, _blogRepositoryMock.Object);
+            var commentService = new CommentService(_unitOfWorkMock.Object);
 
             //Act
             var result = await commentService.CreateCommentAsnyc(incompleteComment);
@@ -52,9 +51,9 @@ namespace Logic.Unit_Tests
                 LikesCounter = 0
             };
 
-            _commentRepositoryMock.Setup(repo => repo.Insert(comment)).ReturnsAsync(true);
+            _unitOfWorkMock.Setup(unit => unit.CommentRepository.Insert(comment)).ReturnsAsync(true);
 
-            var commentService = new CommentService(_commentRepositoryMock.Object, _blogRepositoryMock.Object);
+            var commentService = new CommentService(_unitOfWorkMock.Object);
 
             //Act
             var result = await commentService.CreateCommentAsnyc(comment);
@@ -77,9 +76,9 @@ namespace Logic.Unit_Tests
                 LikesCounter = 0
             };
 
-            _commentRepositoryMock.Setup(repo => repo.Insert(comment)).ReturnsAsync(false);
+            _unitOfWorkMock.Setup(unit => unit.CommentRepository.Insert(comment)).ReturnsAsync(false);
 
-            var commentService = new CommentService(_commentRepositoryMock.Object, _blogRepositoryMock.Object);
+            var commentService = new CommentService(_unitOfWorkMock.Object);
 
             //Act
             var result = await commentService.CreateCommentAsnyc(comment);
@@ -93,8 +92,8 @@ namespace Logic.Unit_Tests
         {
             //Arrange
             var blogId = Guid.NewGuid().ToString();
-            var commentService = new CommentService(_commentRepositoryMock.Object, _blogRepositoryMock.Object);
-            _blogRepositoryMock.Setup(repo => repo.GetById(blogId.ToString()))
+            var commentService = new CommentService(_unitOfWorkMock.Object);
+            _unitOfWorkMock.Setup(unit => unit.BlogRepository.GetById(blogId.ToString()))
                    .ReturnsAsync((Blog)null);
 
             //Act & Assert
@@ -114,10 +113,10 @@ namespace Logic.Unit_Tests
                 new Comment { Id = Guid.NewGuid().ToString(), BlogId = blogId },
                 new Comment { Id = Guid.NewGuid().ToString(), BlogId = blogId }
             };
-            _blogRepositoryMock.Setup(repo => repo.GetById(blogId)).ReturnsAsync(new Blog { Id = blogId });
-            _commentRepositoryMock.Setup(repo => repo.GetAllBlogsCommentAsync(blogId, It.IsAny<PaginationFilter>())).ReturnsAsync(comments);
+            _unitOfWorkMock.Setup(unit => unit.BlogRepository.GetById(blogId)).ReturnsAsync(new Blog { Id = blogId });
+            _unitOfWorkMock.Setup(unit => unit.CommentRepository.GetAllBlogsCommentAsync(blogId, It.IsAny<PaginationFilter>())).ReturnsAsync(comments);
 
-            var commentService = new CommentService(_commentRepositoryMock.Object, _blogRepositoryMock.Object);
+            var commentService = new CommentService(_unitOfWorkMock.Object);
 
             // Act
             var result = await commentService.GetAllBlogsCommentAsnyc(blogId, It.IsAny<PaginationFilter>());
@@ -133,10 +132,10 @@ namespace Logic.Unit_Tests
             // Arrange
             var blogId = Guid.NewGuid().ToString();
             var comments = new List<Comment>();
-            _blogRepositoryMock.Setup(repo => repo.GetById(blogId)).ReturnsAsync(new Blog { Id = blogId });
-            _commentRepositoryMock.Setup(repo => repo.GetAllBlogsCommentAsync(blogId, It.IsAny<PaginationFilter>())).ReturnsAsync(comments);
+            _unitOfWorkMock.Setup(unit => unit.BlogRepository.GetById(blogId)).ReturnsAsync(new Blog { Id = blogId });
+            _unitOfWorkMock.Setup(unit => unit.CommentRepository.GetAllBlogsCommentAsync(blogId, It.IsAny<PaginationFilter>())).ReturnsAsync(comments);
 
-            var commentService = new CommentService(_commentRepositoryMock.Object, _blogRepositoryMock.Object);
+            var commentService = new CommentService(_unitOfWorkMock.Object);
 
             // Act
             var result = await commentService.GetAllBlogsCommentAsnyc(blogId, It.IsAny<PaginationFilter>());
@@ -150,10 +149,10 @@ namespace Logic.Unit_Tests
         {
             // Arrange
             var blogId = Guid.NewGuid().ToString();
-            _blogRepositoryMock.Setup(repo => repo.GetById(blogId)).ReturnsAsync(new Blog { Id = blogId });
-            _commentRepositoryMock.Setup(repo => repo.GetAllBlogsCommentAsync(blogId, It.IsAny<PaginationFilter>())).ThrowsAsync(new Exception("Database error"));
+            _unitOfWorkMock.Setup(unit => unit.BlogRepository.GetById(blogId)).ReturnsAsync(new Blog { Id = blogId });
+            _unitOfWorkMock.Setup(unit => unit.CommentRepository.GetAllBlogsCommentAsync(blogId, It.IsAny<PaginationFilter>())).ThrowsAsync(new Exception("Database error"));
 
-            var commentService = new CommentService(_commentRepositoryMock.Object, _blogRepositoryMock.Object);
+            var commentService = new CommentService(_unitOfWorkMock.Object);
 
             // Act & Assert
             Assert.ThrowsAsync<Exception>(() => commentService.GetAllBlogsCommentAsnyc(blogId, It.IsAny<PaginationFilter>()));
@@ -165,10 +164,10 @@ namespace Logic.Unit_Tests
             // Arrange
             var commentId = Guid.NewGuid().ToString();
             var comment = new Comment { Id = commentId };
-            _commentRepositoryMock.Setup(repo => repo.GetById(commentId)).ReturnsAsync(comment);
-            _commentRepositoryMock.Setup(repo => repo.Delete(comment)).ReturnsAsync(true);
+            _unitOfWorkMock.Setup(unit => unit.CommentRepository.GetById(commentId)).ReturnsAsync(comment);
+            _unitOfWorkMock.Setup(unit => unit.CommentRepository.Delete(comment)).ReturnsAsync(true);
 
-            var commentService = new CommentService(_commentRepositoryMock.Object, _blogRepositoryMock.Object);
+            var commentService = new CommentService(_unitOfWorkMock.Object);
 
             // Act
             var result = await commentService.DeleteCommentAsync(commentId);
@@ -182,9 +181,9 @@ namespace Logic.Unit_Tests
         {
             // Arrange
             var commentId = Guid.NewGuid().ToString();
-            _commentRepositoryMock.Setup(repo => repo.GetById(commentId)).ReturnsAsync((Comment)null);
+            _unitOfWorkMock.Setup(unit => unit.CommentRepository.GetById(commentId)).ReturnsAsync((Comment)null);
 
-            var commentService = new CommentService(_commentRepositoryMock.Object, _blogRepositoryMock.Object);
+            var commentService = new CommentService(_unitOfWorkMock.Object);
 
             // Act
             var result = await commentService.DeleteCommentAsync(commentId);
@@ -199,9 +198,9 @@ namespace Logic.Unit_Tests
             // Arrange
             var commentId = Guid.NewGuid().ToString();
             var comment = new Comment { Id = commentId };
-            _commentRepositoryMock.Setup(repo => repo.GetById(commentId)).ReturnsAsync(comment);
-            _commentRepositoryMock.Setup(repo => repo.Delete(comment)).ReturnsAsync(false);
-            var commentService = new CommentService(_commentRepositoryMock.Object, _blogRepositoryMock.Object);
+            _unitOfWorkMock.Setup(unit => unit.CommentRepository.GetById(commentId)).ReturnsAsync(comment);
+            _unitOfWorkMock.Setup(unit => unit.CommentRepository.Delete(comment)).ReturnsAsync(false);
+            var commentService = new CommentService(_unitOfWorkMock.Object);
 
             // Act
             var result = await commentService.DeleteCommentAsync(commentId);

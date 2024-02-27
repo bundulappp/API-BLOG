@@ -9,13 +9,12 @@ namespace Logic.Unit_Tests
     [TestFixture]
     public class BlogServiceUnitTests
     {
-        private Mock<IBlogRepository> _blogRepositoryMock;
-        private Mock<ITagRepository> _tagRepositoryMock;
+        private Mock<IUnitOfWork> _unitOfWorkMock;
         [SetUp]
         public void Setup()
         {
-            _blogRepositoryMock = new Mock<IBlogRepository>();
-            _tagRepositoryMock = new Mock<ITagRepository>();
+            _unitOfWorkMock = new Mock<IUnitOfWork>();
+            System.Diagnostics.Debugger.Launch();
         }
 
         [Test]
@@ -25,10 +24,10 @@ namespace Logic.Unit_Tests
             var blogId = Guid.NewGuid().ToString();
             var userId = Guid.NewGuid().ToString();
 
-            _blogRepositoryMock.Setup(repo => repo.GetById(blogId.ToString()))
+            _unitOfWorkMock.Setup(unit => unit.BlogRepository.GetById(blogId.ToString()))
                    .ReturnsAsync(new Blog { UserId = userId });
 
-            var blogService = new BlogService(_blogRepositoryMock.Object, _tagRepositoryMock.Object);
+            var blogService = new BlogService(_unitOfWorkMock.Object);
 
             // Act
             var result = await blogService.UserOwnsBlogAsync(blogId, userId);
@@ -43,10 +42,10 @@ namespace Logic.Unit_Tests
             var blogId = Guid.NewGuid().ToString();
             var userId = Guid.NewGuid().ToString();
 
-            _blogRepositoryMock.Setup(repo => repo.GetById(blogId.ToString()))
+            _unitOfWorkMock.Setup(unit => unit.BlogRepository.GetById(blogId.ToString()))
                    .ReturnsAsync(new Blog());
 
-            var blogService = new BlogService(_blogRepositoryMock.Object, _tagRepositoryMock.Object);
+            var blogService = new BlogService(_unitOfWorkMock.Object);
 
             // Act
             var result = await blogService.UserOwnsBlogAsync(blogId, userId);
@@ -62,10 +61,10 @@ namespace Logic.Unit_Tests
             var blogId = Guid.NewGuid().ToString();
             var userId = Guid.NewGuid().ToString();
 
-            _blogRepositoryMock.Setup(repo => repo.GetById(blogId.ToString()))
+            _unitOfWorkMock.Setup(unit => unit.BlogRepository.GetById(blogId.ToString()))
                    .ReturnsAsync((Blog)null);
 
-            var blogService = new BlogService(_blogRepositoryMock.Object, _tagRepositoryMock.Object);
+            var blogService = new BlogService(_unitOfWorkMock.Object);
 
             // Act
             var result = await blogService.UserOwnsBlogAsync(blogId, userId);
@@ -85,10 +84,10 @@ namespace Logic.Unit_Tests
                     new Blog { Id = Guid.NewGuid().ToString()},
                 };
 
-            _blogRepositoryMock.Setup(repo => repo.GetAll(It.IsAny<PaginationFilter>(), It.IsAny<string>())).ReturnsAsync(blogList);
+            _unitOfWorkMock.Setup(unit => unit.BlogRepository.GetAll(It.IsAny<PaginationFilter>(), It.IsAny<string>())).ReturnsAsync(blogList);
 
 
-            var blogService = new BlogService(_blogRepositoryMock.Object, _tagRepositoryMock.Object);
+            var blogService = new BlogService(_unitOfWorkMock.Object);
 
             //Act
             var result = await blogService.GetAllAsync();
@@ -109,10 +108,10 @@ namespace Logic.Unit_Tests
                     new Blog { Id = Guid.NewGuid().ToString(),UserId = userId},
                 };
 
-            _blogRepositoryMock.Setup(repo => repo.GetAll(It.IsAny<PaginationFilter>(), It.IsAny<string>())).ReturnsAsync(blogList);
+            _unitOfWorkMock.Setup(unit => unit.BlogRepository.GetAll(It.IsAny<PaginationFilter>(), It.IsAny<string>())).ReturnsAsync(blogList);
 
 
-            var blogService = new BlogService(_blogRepositoryMock.Object, _tagRepositoryMock.Object);
+            var blogService = new BlogService(_unitOfWorkMock.Object);
 
             //Act
             var result = await blogService.GetAllAsync(userId);
@@ -133,10 +132,10 @@ namespace Logic.Unit_Tests
                     new Blog { Id = Guid.NewGuid().ToString()},
                 };
 
-            _blogRepositoryMock.Setup(repo => repo.GetAll(paginationFilter, It.IsAny<string>())).ReturnsAsync(blogList);
+            _unitOfWorkMock.Setup(unit => unit.BlogRepository.GetAll(paginationFilter, It.IsAny<string>())).ReturnsAsync(blogList);
 
 
-            var blogService = new BlogService(_blogRepositoryMock.Object, _tagRepositoryMock.Object);
+            var blogService = new BlogService(_unitOfWorkMock.Object);
 
             //Act
             var result = await blogService.GetAllAsync(null, paginationFilter);
@@ -158,10 +157,10 @@ namespace Logic.Unit_Tests
                     new Blog { Id = Guid.NewGuid().ToString(), UserId =userId},
                 };
 
-            _blogRepositoryMock.Setup(repo => repo.GetAll(paginationFilter, userId)).ReturnsAsync(blogList);
+            _unitOfWorkMock.Setup(unit => unit.BlogRepository.GetAll(paginationFilter, userId)).ReturnsAsync(blogList);
 
 
-            var blogService = new BlogService(_blogRepositoryMock.Object, _tagRepositoryMock.Object);
+            var blogService = new BlogService(_unitOfWorkMock.Object);
 
             //Act
             var result = await blogService.GetAllAsync(userId, paginationFilter);
@@ -176,9 +175,9 @@ namespace Logic.Unit_Tests
             //Arrange
             var blogList = new List<Blog>();
 
-            _blogRepositoryMock.Setup(repo => repo.GetAll(It.IsAny<PaginationFilter>(), It.IsAny<string>())).ReturnsAsync(blogList);
+            _unitOfWorkMock.Setup(unit => unit.BlogRepository.GetAll(It.IsAny<PaginationFilter>(), It.IsAny<string>())).ReturnsAsync(blogList);
 
-            var blogService = new BlogService(_blogRepositoryMock.Object, _tagRepositoryMock.Object);
+            var blogService = new BlogService(_unitOfWorkMock.Object);
             //Act
             var result = await blogService.GetAllAsync();
             //Assert
@@ -190,8 +189,8 @@ namespace Logic.Unit_Tests
         {
             //Arrange
             var blogId = Guid.NewGuid().ToString();
-            _blogRepositoryMock.Setup(repo => repo.GetById(blogId)).ReturnsAsync((Blog)null);
-            var blogService = new BlogService(_blogRepositoryMock.Object, _tagRepositoryMock.Object);
+            _unitOfWorkMock.Setup(unit => unit.BlogRepository.GetById(blogId)).ReturnsAsync((Blog)null);
+            var blogService = new BlogService(_unitOfWorkMock.Object);
 
             //Act
             var result = await blogService.GetByIdAsync(blogId);
@@ -205,8 +204,8 @@ namespace Logic.Unit_Tests
             //Arrange
             var blogId = Guid.NewGuid().ToString();
             var blogEntity = new Blog { Id = blogId };
-            _blogRepositoryMock.Setup(repo => repo.GetById(blogId)).ReturnsAsync(blogEntity);
-            var blogService = new BlogService(_blogRepositoryMock.Object, _tagRepositoryMock.Object);
+            _unitOfWorkMock.Setup(unit => unit.BlogRepository.GetById(blogId)).ReturnsAsync(blogEntity);
+            var blogService = new BlogService(_unitOfWorkMock.Object);
             //Act
             var result = await blogService.GetByIdAsync(blogId);
             //Assert
@@ -225,9 +224,9 @@ namespace Logic.Unit_Tests
                 Tags = new List<BlogTag>()
             };
 
-            _blogRepositoryMock.Setup(repo => repo.Insert(incompleteBlog)).ReturnsAsync(false);
+            _unitOfWorkMock.Setup(unit => unit.BlogRepository.Insert(incompleteBlog)).ReturnsAsync(false);
 
-            var blogService = new BlogService(_blogRepositoryMock.Object, _tagRepositoryMock.Object);
+            var blogService = new BlogService(_unitOfWorkMock.Object);
 
             //Act
             var result = await blogService.CreateBlogAsync(incompleteBlog);
@@ -277,13 +276,13 @@ namespace Logic.Unit_Tests
                     }
             };
 
-            _blogRepositoryMock.Setup(repo => repo.Insert(blog)).ReturnsAsync(true);
+            _unitOfWorkMock.Setup(unit => unit.BlogRepository.Insert(blog)).ReturnsAsync(true);
             foreach (var tag in blog.Tags)
             {
-                _tagRepositoryMock.Setup(repo => repo.GetById(tag.TagId)).ReturnsAsync((Tag)null);
-                _tagRepositoryMock.Setup(repo => repo.Insert(It.IsAny<Tag>())).Verifiable();
+                _unitOfWorkMock.Setup(unit => unit.TagRepository.GetById(tag.TagId)).ReturnsAsync((Tag)null);
+                _unitOfWorkMock.Setup(unit => unit.TagRepository.Insert(It.IsAny<Tag>())).Verifiable();
             }
-            var blogService = new BlogService(_blogRepositoryMock.Object, _tagRepositoryMock.Object);
+            var blogService = new BlogService(_unitOfWorkMock.Object);
 
             // Act
             var result = await blogService.CreateBlogAsync(blog);
@@ -292,7 +291,7 @@ namespace Logic.Unit_Tests
             Assert.IsTrue(result);
             foreach (var tag in blog.Tags)
             {
-                _tagRepositoryMock.Verify(repo => repo.Insert(It.Is<Tag>(t => t.Name == tag.TagId)), Times.Once);
+                _unitOfWorkMock.Verify(unit => unit.TagRepository.Insert(It.Is<Tag>(t => t.Name == tag.TagId)), Times.Once);
             }
         }
 
@@ -338,13 +337,13 @@ namespace Logic.Unit_Tests
         }
             };
 
-            _blogRepositoryMock.Setup(repo => repo.Insert(blog)).ReturnsAsync(true);
+            _unitOfWorkMock.Setup(unit => unit.BlogRepository.Insert(blog)).ReturnsAsync(true);
             foreach (var tag in blog.Tags)
             {
-                _tagRepositoryMock.Setup(repo => repo.GetById(tag.TagId)).ReturnsAsync(new Tag { Name = tag.TagId });
+                _unitOfWorkMock.Setup(unit => unit.TagRepository.GetById(tag.TagId)).ReturnsAsync(new Tag { Name = tag.TagId });
             }
 
-            var blogService = new BlogService(_blogRepositoryMock.Object, _tagRepositoryMock.Object);
+            var blogService = new BlogService(_unitOfWorkMock.Object);
 
             //Act
             var result = await blogService.CreateBlogAsync(blog);
@@ -353,8 +352,6 @@ namespace Logic.Unit_Tests
             Assert.IsTrue(result);
         }
 
-
-        [Test]
         public async Task CreateBlogAsync_DbInsertFails_ShouldReturnFalse()
         {
             // Arrange
@@ -383,10 +380,11 @@ namespace Logic.Unit_Tests
         }
             };
 
-            // Beállítjuk, hogy a blog beszúrása sikertelen legyen
-            _blogRepositoryMock.Setup(repo => repo.Insert(blog)).ReturnsAsync(false);
+            // Mocking the behavior to simulate the blog insertion failing
+            _unitOfWorkMock.Setup(unit => unit.BlogRepository.Insert(blog)).ReturnsAsync(false);
+            _unitOfWorkMock.Setup(unit => unit.TagRepository.GetById(It.IsAny<string>())).ReturnsAsync((Tag)null);
 
-            var blogService = new BlogService(_blogRepositoryMock.Object, _tagRepositoryMock.Object);
+            var blogService = new BlogService(_unitOfWorkMock.Object);
 
             // Act
             var result = await blogService.CreateBlogAsync(blog);
@@ -394,6 +392,7 @@ namespace Logic.Unit_Tests
             // Assert
             Assert.IsFalse(result);
         }
+
 
         [Test]
         public async Task UpdateBlogAsync_ExistingBlog_ShouldReturnTrue()
@@ -415,10 +414,10 @@ namespace Logic.Unit_Tests
                 Body = "Updated blog content",
             };
 
-            _blogRepositoryMock.Setup(repo => repo.GetById(existingBlogId)).ReturnsAsync(existingBlog);
-            _blogRepositoryMock.Setup(repo => repo.Update(updatedBlog)).ReturnsAsync(true);
+            _unitOfWorkMock.Setup(unit => unit.BlogRepository.GetById(existingBlogId)).ReturnsAsync(existingBlog);
+            _unitOfWorkMock.Setup(unit => unit.BlogRepository.Update(updatedBlog)).ReturnsAsync(true);
 
-            var blogService = new BlogService(_blogRepositoryMock.Object, _tagRepositoryMock.Object);
+            var blogService = new BlogService(_unitOfWorkMock.Object);
 
             // Act
             var result = await blogService.UpdateBlogAsync(updatedBlog);
@@ -441,9 +440,9 @@ namespace Logic.Unit_Tests
                 // További szükséges tulajdonságok inicializálása
             };
 
-            _blogRepositoryMock.Setup(repo => repo.GetById(nonExistingBlogId)).ReturnsAsync((Blog)null);
+            _unitOfWorkMock.Setup(unit => unit.BlogRepository.GetById(nonExistingBlogId)).ReturnsAsync((Blog)null);
 
-            var blogService = new BlogService(_blogRepositoryMock.Object, _tagRepositoryMock.Object);
+            var blogService = new BlogService(_unitOfWorkMock.Object);
 
             // Act
             var result = await blogService.UpdateBlogAsync(nonExistingBlog);
@@ -474,10 +473,10 @@ namespace Logic.Unit_Tests
                 // Frissített tulajdonságok
             };
 
-            _blogRepositoryMock.Setup(repo => repo.GetById(existingBlogId)).ReturnsAsync(existingBlog);
-            _blogRepositoryMock.Setup(repo => repo.Update(updatedBlog)).ReturnsAsync(false); // Sikertelen frissítés szimulálása
+            _unitOfWorkMock.Setup(unit => unit.BlogRepository.GetById(existingBlogId)).ReturnsAsync(existingBlog);
+            _unitOfWorkMock.Setup(unit => unit.BlogRepository.Update(updatedBlog)).ReturnsAsync(false); // Sikertelen frissítés szimulálása
 
-            var blogService = new BlogService(_blogRepositoryMock.Object, _tagRepositoryMock.Object);
+            var blogService = new BlogService(_unitOfWorkMock.Object);
 
             // Act
             var result = await blogService.UpdateBlogAsync(updatedBlog);
@@ -499,10 +498,10 @@ namespace Logic.Unit_Tests
                 Body = "Blog content",
             };
 
-            _blogRepositoryMock.Setup(repo => repo.GetById(existingBlogId)).ReturnsAsync(existingBlog);
-            _blogRepositoryMock.Setup(repo => repo.Delete(existingBlog)).ReturnsAsync(true);
+            _unitOfWorkMock.Setup(unit => unit.BlogRepository.GetById(existingBlogId)).ReturnsAsync(existingBlog);
+            _unitOfWorkMock.Setup(unit => unit.BlogRepository.Delete(existingBlog)).ReturnsAsync(true);
 
-            var blogService = new BlogService(_blogRepositoryMock.Object, _tagRepositoryMock.Object);
+            var blogService = new BlogService(_unitOfWorkMock.Object);
 
             // Act
             var result = await blogService.DeleteBlogAsync(existingBlogId);
@@ -517,9 +516,9 @@ namespace Logic.Unit_Tests
             // Arrange
             var nonExistingBlogId = Guid.NewGuid().ToString();
 
-            _blogRepositoryMock.Setup(repo => repo.GetById(nonExistingBlogId)).ReturnsAsync((Blog)null);
+            _unitOfWorkMock.Setup(unit => unit.BlogRepository.GetById(nonExistingBlogId)).ReturnsAsync((Blog)null);
 
-            var blogService = new BlogService(_blogRepositoryMock.Object, _tagRepositoryMock.Object);
+            var blogService = new BlogService(_unitOfWorkMock.Object);
 
             // Act
             var result = await blogService.DeleteBlogAsync(nonExistingBlogId);
@@ -542,10 +541,10 @@ namespace Logic.Unit_Tests
                 // További szükséges tulajdonságok inicializálása
             };
 
-            _blogRepositoryMock.Setup(repo => repo.GetById(existingBlogId)).ReturnsAsync(existingBlog);
-            _blogRepositoryMock.Setup(repo => repo.Delete(existingBlog)).ReturnsAsync(false); // Sikertelen törlés szimulálása
+            _unitOfWorkMock.Setup(unit => unit.BlogRepository.GetById(existingBlogId)).ReturnsAsync(existingBlog);
+            _unitOfWorkMock.Setup(unit => unit.BlogRepository.Delete(existingBlog)).ReturnsAsync(false); // Sikertelen törlés szimulálása
 
-            var blogService = new BlogService(_blogRepositoryMock.Object, _tagRepositoryMock.Object);
+            var blogService = new BlogService(_unitOfWorkMock.Object);
 
             // Act
             var result = await blogService.DeleteBlogAsync(existingBlogId);
@@ -560,9 +559,9 @@ namespace Logic.Unit_Tests
             // Arrange
             var tagId = Guid.NewGuid().ToString();
             var expectedTag = new Tag { Name = tagId };
-            _tagRepositoryMock.Setup(repo => repo.GetById(tagId)).ReturnsAsync(expectedTag);
+            _unitOfWorkMock.Setup(unit => unit.TagRepository.GetById(tagId)).ReturnsAsync(expectedTag);
 
-            var blogService = new BlogService(_blogRepositoryMock.Object, _tagRepositoryMock.Object);
+            var blogService = new BlogService(_unitOfWorkMock.Object);
 
             // Act
             var result = await blogService.GetTagByIdAsync(tagId);
@@ -576,9 +575,9 @@ namespace Logic.Unit_Tests
         {
             // Arrange
             var tagId = Guid.NewGuid().ToString();
-            _tagRepositoryMock.Setup(repo => repo.GetById(tagId)).ReturnsAsync((Tag)null);
+            _unitOfWorkMock.Setup(unit => unit.TagRepository.GetById(tagId)).ReturnsAsync((Tag)null);
 
-            var blogService = new BlogService(_blogRepositoryMock.Object, _tagRepositoryMock.Object);
+            var blogService = new BlogService(_unitOfWorkMock.Object);
 
             // Act
             var result = await blogService.GetTagByIdAsync(tagId);
@@ -591,8 +590,8 @@ namespace Logic.Unit_Tests
         public async Task GetTagByIdAsync_EmptyId_ShouldReturnNull()
         {
             // Arrange
-            var blogService = new BlogService(_blogRepositoryMock.Object, _tagRepositoryMock.Object);
-
+            var blogService = new BlogService(_unitOfWorkMock.Object);
+            _unitOfWorkMock.Setup(unit => unit.TagRepository.GetById(string.Empty));
             // Act
             var result = await blogService.GetTagByIdAsync(string.Empty);
 
@@ -605,9 +604,9 @@ namespace Logic.Unit_Tests
         {
             // Arrange
             var tags = new List<Tag> { new Tag { Name = "Tag1" }, new Tag { Name = "Tag2" } };
-            _tagRepositoryMock.Setup(repo => repo.GetAll(It.IsAny<PaginationFilter>(), It.IsAny<string>())).ReturnsAsync(tags);
+            _unitOfWorkMock.Setup(unit => unit.TagRepository.GetAll(It.IsAny<PaginationFilter>(), It.IsAny<string>())).ReturnsAsync(tags);
 
-            var blogService = new BlogService(_blogRepositoryMock.Object, _tagRepositoryMock.Object);
+            var blogService = new BlogService(_unitOfWorkMock.Object);
 
             // Act
             var result = await blogService.GetAllTagsAsync();
@@ -622,8 +621,8 @@ namespace Logic.Unit_Tests
         {
             // Arrange
             var tags = new List<Tag>();
-            _tagRepositoryMock.Setup(repo => repo.GetAll(It.IsAny<PaginationFilter>(), It.IsAny<string>())).ReturnsAsync(tags);
-            var blogService = new BlogService(_blogRepositoryMock.Object, _tagRepositoryMock.Object);
+            _unitOfWorkMock.Setup(unit => unit.TagRepository.GetAll(It.IsAny<PaginationFilter>(), It.IsAny<string>())).ReturnsAsync(tags);
+            var blogService = new BlogService(_unitOfWorkMock.Object);
 
             // Act
             var result = await blogService.GetAllTagsAsync();
@@ -636,8 +635,8 @@ namespace Logic.Unit_Tests
         public void GetAllTagsAsync_DbError_ShouldThrowException()
         {
             // Arrange
-            _tagRepositoryMock.Setup(repo => repo.GetAll(It.IsAny<PaginationFilter>(), It.IsAny<string>())).Throws(new Exception("Database error"));
-            var blogService = new BlogService(_blogRepositoryMock.Object, _tagRepositoryMock.Object);
+            _unitOfWorkMock.Setup(unit => unit.TagRepository.GetAll(It.IsAny<PaginationFilter>(), It.IsAny<string>())).Throws(new Exception("Database error"));
+            var blogService = new BlogService(_unitOfWorkMock.Object);
 
             // Act & Assert
             Assert.ThrowsAsync<Exception>(async () => await blogService.GetAllTagsAsync());
@@ -648,10 +647,10 @@ namespace Logic.Unit_Tests
         {
             // Arrange
             var newTag = new Tag { Name = "NewTag" };
-            _tagRepositoryMock.Setup(repo => repo.GetById("NewTag")).ReturnsAsync((Tag)null);
-            _tagRepositoryMock.Setup(repo => repo.Insert(newTag)).ReturnsAsync(true);
+            _unitOfWorkMock.Setup(unit => unit.TagRepository.GetById("NewTag")).ReturnsAsync((Tag)null);
+            _unitOfWorkMock.Setup(unit => unit.TagRepository.Insert(newTag)).ReturnsAsync(true);
 
-            var blogService = new BlogService(_blogRepositoryMock.Object, _tagRepositoryMock.Object);
+            var blogService = new BlogService(_unitOfWorkMock.Object);
 
 
             // Act
@@ -666,9 +665,9 @@ namespace Logic.Unit_Tests
         {
             // Arrange
             var existingTag = new Tag { Name = "ExistingTag" };
-            _tagRepositoryMock.Setup(repo => repo.GetById("ExistingTag")).ReturnsAsync(existingTag);
+            _unitOfWorkMock.Setup(unit => unit.TagRepository.GetById("ExistingTag")).ReturnsAsync(existingTag);
 
-            var blogService = new BlogService(_blogRepositoryMock.Object, _tagRepositoryMock.Object);
+            var blogService = new BlogService(_unitOfWorkMock.Object);
 
             // Act
             var result = await blogService.CreateSingleTagAsync(existingTag);
@@ -682,10 +681,10 @@ namespace Logic.Unit_Tests
         {
             // Arrange
             var newTag = new Tag { Name = "NewTag" };
-            _tagRepositoryMock.Setup(repo => repo.GetById("NewTag")).ReturnsAsync((Tag)null);
-            _tagRepositoryMock.Setup(repo => repo.Insert(newTag)).ReturnsAsync(false);
+            _unitOfWorkMock.Setup(unit => unit.TagRepository.GetById("NewTag")).ReturnsAsync((Tag)null);
+            _unitOfWorkMock.Setup(unit => unit.TagRepository.Insert(newTag)).ReturnsAsync(false);
 
-            var blogService = new BlogService(_blogRepositoryMock.Object, _tagRepositoryMock.Object);
+            var blogService = new BlogService(_unitOfWorkMock.Object);
 
             // Act
             var result = await blogService.CreateSingleTagAsync(newTag);
@@ -699,10 +698,10 @@ namespace Logic.Unit_Tests
             // Arrange
             var existingTagId = "ExistingTag";
             var existingTag = new Tag { Name = existingTagId };
-            _tagRepositoryMock.Setup(repo => repo.GetById(existingTagId)).ReturnsAsync(existingTag);
-            _tagRepositoryMock.Setup(repo => repo.Delete(existingTag)).ReturnsAsync(true);
+            _unitOfWorkMock.Setup(unit => unit.TagRepository.GetById(existingTagId)).ReturnsAsync(existingTag);
+            _unitOfWorkMock.Setup(unit => unit.TagRepository.Delete(existingTag)).ReturnsAsync(true);
 
-            var blogService = new BlogService(_blogRepositoryMock.Object, _tagRepositoryMock.Object);
+            var blogService = new BlogService(_unitOfWorkMock.Object);
 
             // Act
             var result = await blogService.DeleteTagAsync(existingTagId);
@@ -715,9 +714,9 @@ namespace Logic.Unit_Tests
         {
             // Arrange
             var nonExistingTagId = "NonExistingTag";
-            _tagRepositoryMock.Setup(repo => repo.GetById(nonExistingTagId)).ReturnsAsync((Tag)null);
+            _unitOfWorkMock.Setup(unit => unit.TagRepository.GetById(nonExistingTagId)).ReturnsAsync((Tag)null);
 
-            var blogService = new BlogService(_blogRepositoryMock.Object, _tagRepositoryMock.Object);
+            var blogService = new BlogService(_unitOfWorkMock.Object);
 
             // Act
             var result = await blogService.DeleteTagAsync(nonExistingTagId);
@@ -731,10 +730,10 @@ namespace Logic.Unit_Tests
             // Arrange
             var existingTagId = "ExistingTag";
             var existingTag = new Tag { Name = existingTagId };
-            _tagRepositoryMock.Setup(repo => repo.GetById(existingTagId)).ReturnsAsync(existingTag);
-            _tagRepositoryMock.Setup(repo => repo.Delete(existingTag)).ReturnsAsync(false);
+            _unitOfWorkMock.Setup(unit => unit.TagRepository.GetById(existingTagId)).ReturnsAsync(existingTag);
+            _unitOfWorkMock.Setup(unit => unit.TagRepository.Delete(existingTag)).ReturnsAsync(false);
 
-            var blogService = new BlogService(_blogRepositoryMock.Object, _tagRepositoryMock.Object);
+            var blogService = new BlogService(_unitOfWorkMock.Object);
 
             // Act
             var result = await blogService.DeleteTagAsync(existingTagId);
