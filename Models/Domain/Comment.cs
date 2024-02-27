@@ -19,9 +19,9 @@ namespace Models.Domain
         public string BlogId { get; set; }
         [ForeignKey(nameof(BlogId))]
         public virtual Blog Blog { get; set; }
-        public string ParentCommentId { get; set; }
+        public string? ParentCommentId { get; set; }
         [ForeignKey(nameof(ParentCommentId))]
-        public virtual Comment ParentComment { get; set; }
-        public virtual List<Comment> ChildComments { get; set; }
+        public virtual Comment? ParentComment { get; set; }
+        public virtual List<Comment> ChildComments { get; set; } = new List<Comment>();
     }
 }
