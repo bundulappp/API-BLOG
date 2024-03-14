@@ -6,5 +6,6 @@ namespace Models.Interfaces
     {
         Uri GetBlogUri(string blogId);
         Uri GetAllUri(PaginationQuery? paginationQuery = null);
+        Uri GetCommentUri(string commentId);
     }
 }

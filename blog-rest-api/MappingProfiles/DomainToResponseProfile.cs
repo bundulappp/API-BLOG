@@ -12,6 +12,8 @@ namespace blog_rest_api.MappingProfiles
                 .ForMember(dest => dest.Tags, opt => opt.MapFrom(src => src.Tags.Select(x => new TagResponse { Name = x.TagId, UserId = x.Tag.UserId, CreatedAt = x.Tag.CreatedAt, UpdatedAt = x.Tag.UpdatedAt })));
             CreateMap<Tag, TagResponse>();
             CreateMap<Comment, CommentResponse>();
+            CreateMap<Comment, ReplyCommentResponse>()
+                .ForMember(dest => dest.ParentId, opt => opt.MapFrom(src => src.ParentCommentId));
         }
     }
 }

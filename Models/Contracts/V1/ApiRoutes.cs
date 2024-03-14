@@ -35,6 +35,7 @@
         {
             public const string Get = Base + "/comment/{commentId}";
             public const string Create = Base + "/comment";
+            public const string Reply = Base + "/comment-reply";
             public const string Update = Base + "/comment/{commentId}";
             public const string Delete = Base + "/comment/{commentId}";
 

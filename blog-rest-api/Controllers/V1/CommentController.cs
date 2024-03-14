@@ -41,9 +41,25 @@ namespace blog_rest_api.Controllers.V1
             if (!result)
                 return BadRequest();
 
-            var location = _uriService.GetBlogUri(comment.Id.ToString());
+            var location = _uriService.GetCommentUri(comment.Id.ToString());
 
             return Created(location, new Response<CommentResponse>(_mapper.Map<CommentResponse>(comment)));
+        }
+
+        [HttpPost(ApiRoutes.Comments.Reply)]
+        public async Task<IActionResult> Reply([FromBody] ReplyCommentRequest replyCommentRequest)
+        {
+            var reply = _mapper.Map<Comment>(replyCommentRequest);
+            reply.UserId = HttpContext.GetUserId();
+
+            var result = await _commentService.CreateCommentAsnyc(reply);
+
+            if (!result)
+                return BadRequest();
+
+            var location = _uriService.GetCommentUri(reply.Id.ToString());
+
+            return Created(location, new Response<ReplyCommentResponse>(_mapper.Map<ReplyCommentResponse>(reply)));
         }
 
         [HttpPut(ApiRoutes.Comments.Update)]
