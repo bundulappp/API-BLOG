@@ -1,4 +1,5 @@
-﻿using blog_rest_api.Filters;
+﻿using Azure.Storage.Blobs;
+using blog_rest_api.Filters;
 using blog_rest_api.MappingProfiles;
 using Data.Options;
 using FluentValidation;
@@ -24,6 +25,7 @@ namespace blog_rest_api.Installers
             builder.Services.AddScoped<IIdentityService, IdentityService>();
             builder.Services.AddScoped<IBlogService, BlogService>();
             builder.Services.AddScoped<ICommentService, CommentService>();
+            builder.Services.AddSingleton<IBlobService, BlobService>();
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddFluentValidationAutoValidation();
@@ -32,7 +34,9 @@ namespace blog_rest_api.Installers
             {
                 opt.Filters.Add<ValidationFilter>();
             });
-
+            //BLOB
+            builder.Services.AddSingleton(x =>
+              new BlobServiceClient(builder.Configuration.GetValue<string>("AzureBlobStorageConnectionString")));
 
 
             var tokenValidationParameters = new TokenValidationParameters
