@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Models.Contracts.V1.Blob
+﻿namespace Models.Contracts.V1.Blob
 {
     public class BlobInfo
     {
