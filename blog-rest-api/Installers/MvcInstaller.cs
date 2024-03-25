@@ -34,11 +34,6 @@ namespace blog_rest_api.Installers
             {
                 opt.Filters.Add<ValidationFilter>();
             });
-            //BLOB
-            string connectionString = builder.Configuration.GetValue<string>("AzureBlobStorageConnectionString");
-            builder.Services.AddSingleton(x =>
-              new BlobServiceClient(connectionString.Replace("AZURE-CONNECTION-STRING", Environment.GetEnvironmentVariable(connectionString))));
-
 
             var tokenValidationParameters = new TokenValidationParameters
             {
