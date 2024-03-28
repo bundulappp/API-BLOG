@@ -1,5 +1,4 @@
-﻿using Azure.Storage.Blobs;
-using blog_rest_api.Filters;
+﻿using blog_rest_api.Filters;
 using blog_rest_api.MappingProfiles;
 using Data.Options;
 using FluentValidation;
@@ -8,6 +7,7 @@ using Logic;
 using Logic.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Models;
 using Models.Interfaces;
 using System.Text;
 
@@ -25,6 +25,7 @@ namespace blog_rest_api.Installers
             builder.Services.AddScoped<IIdentityService, IdentityService>();
             builder.Services.AddScoped<IBlogService, BlogService>();
             builder.Services.AddScoped<ICommentService, CommentService>();
+            builder.Services.AddScoped<IFileService, FileService>();
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddFluentValidationAutoValidation();
@@ -33,9 +34,8 @@ namespace blog_rest_api.Installers
             {
                 opt.Filters.Add<ValidationFilter>();
             });
-            //BLOB
-            builder.Services.AddSingleton(x =>
-              new BlobServiceClient(builder.Configuration.GetValue<string>("AzureBlobStorageConnectionString")));
+            // appsettings.json AppConfig section
+            builder.Services.Configure<AppConfig>(builder.Configuration.GetSection("AppConfig"));
 
 
             var tokenValidationParameters = new TokenValidationParameters
