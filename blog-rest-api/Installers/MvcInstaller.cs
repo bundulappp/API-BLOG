@@ -25,7 +25,6 @@ namespace blog_rest_api.Installers
             builder.Services.AddScoped<IIdentityService, IdentityService>();
             builder.Services.AddScoped<IBlogService, BlogService>();
             builder.Services.AddScoped<ICommentService, CommentService>();
-            builder.Services.AddSingleton<IBlobService, BlobService>();
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddFluentValidationAutoValidation();

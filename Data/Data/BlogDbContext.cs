@@ -18,7 +18,5 @@ namespace Data.Data
         public DbSet<Tag> Tags { get; set; }
         public DbSet<BlogTag> BlogTags { get; set; }
         public DbSet<Comment> Comments { get; set; }
-        public DbSet<Blob> Blobs { get; set; }
-
     }
 }
